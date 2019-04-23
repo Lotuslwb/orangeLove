@@ -1,0 +1,66 @@
+@import "../../styles/less/_index.less";
+
+body {
+  background: @page-background-color;
+}
+
+.page {
+  padding: 0 @padding-horizontal;
+}
+
+.head {
+  width: 100%;
+}
+
+.card {
+  margin-top: 20px;
+  border-radius: 10px;
+  border-top: 10px solid #f7bd3b;
+
+  &__body {
+    padding: 15px 15px 50px 15px;
+    text-align: center;
+    background: #fff;
+    color: @main-color;
+    border-radius: 0 0 10px 10px;
+    position: relative;
+
+    .submit {
+      background: #f7bd3b;
+      border: 2px solid #fee9ba;
+      color: #fff;
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      margin-left: -40px;
+      margin-bottom: -40px;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      border-radius: 40px;
+    }
+
+    .item {
+      margin-top: 10px;
+
+      .label {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .item__gender {
+        width: 50px;
+        height: 50px;
+      }
+
+      .item__name {
+        width: 50%;
+        border: 1px solid @main-color;
+        height: 30px;
+        border-radius: 15px;
+        margin: 0 auto;
+      }
+    }
+  }
+}

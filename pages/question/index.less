@@ -1,0 +1,73 @@
+@import "../../styles/less/_index.less";
+
+body {
+  background: @page-background-color;
+}
+
+.page {
+  padding: 0 @padding-horizontal;
+}
+
+.number {
+  padding: 10px;
+  text-align: center;
+  color: #fc9b2d;
+  font-size: 18px;
+}
+
+.card {
+  color: @main-color;
+
+  &__body {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 18px;
+    .question {
+      margin-bottom:  30px;
+    }
+    .answer {
+      //height: 24px;
+      border-radius: 12px;
+      //line-height: 24px;
+      padding: 5px 0;
+      text-align: center;
+      border: 1px solid @main-color;
+      margin-top: 20px;
+
+      &__chosen {
+        background: #5ac3fa;
+        border-radius: 12px;
+        //line-height: 24px;
+        padding: 5px 0;
+        text-align: center;
+        border: 1px solid @main-color;
+        margin-top: 20px;
+      }
+    }
+  }
+
+  &__footer {
+    border-radius: 10px;
+    background: #6acccb;
+    height: 100px;
+  }
+
+}
+
+.step {
+  color: #fc9b2d;
+  display: flex;
+  margin-top: 10px;
+  font-size: 18px;
+
+  .prev {
+  }
+
+  .center {
+    flex: 1;
+  }
+
+  .next {
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "presets": [
+    "next/babel"
+  ],
+  "plugins": [
+    [
+      "import",
+      {
+        "libraryName": "antd-mobile"
+      }
+    ],
+    "transform-async-to-generator",
+    "transform-class-properties",
+    ["@babel/plugin-proposal-decorators", {
+      "legacy": true
+    }],
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@components": "./components",
+          "@constants": "./constants",
+          "@stores": "./stores",
+          "@utils": "./utils"
+        }
+      }
+    ]
+  ]
+}
