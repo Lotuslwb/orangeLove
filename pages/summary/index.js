@@ -34,7 +34,8 @@ class Page extends React.Component {
             radarData: null,
             posterVisible: false,
 			shareVisible: false,
-			testVisiable: false,
+            testVisiable: false,
+            bak: false,
 			attrId:0
         };
     }
@@ -266,8 +267,8 @@ class Page extends React.Component {
                     </div>
                 </div>
                 <div className={styles.sectionBottom}>
-                    <img style={{width: '100%'}} src={'/static/img/result_work.png'} onClick={this.handleTest.bind(this, 'pic1')}/>
-                    <img style={{width: '100%'}} src={'/static/img/result_pro.png'} onClick={this.handleTest.bind(this, 'pic2')}/>
+                    <img style={{width: '100%'}} src={'/static/img/result_work.png'} onClick={() => {this.setState({bak: true})}}/>
+                    <img style={{width: '100%'}} src={'/static/img/result_pro.png'} onClick={() => {this.setState({bak: true})}}/>
                 </div>
                 {/*<img className={styles.page} src='/static/img/page/result_01.png'/>*/}
                 {/*<img onClick={this.handleTest} className={styles.page} src='/static/img/page/result_02.png'/>*/}
@@ -299,7 +300,7 @@ class Page extends React.Component {
                 >
                     <img style={{width: '100%'}} src={'/static/img/poster01.png'}/>
                 </Modal>
-				<Modal visible={this.state.testVisiable}
+                <Modal visible={this.state.testVisiable}
                        transparent={true}
                     //    maskClosable={true}
                     //    platform={'android'}
@@ -308,12 +309,20 @@ class Page extends React.Component {
                            this.setState({testVisiable: false})
                        }}
                 >
-                    <p>即将上线，敬请期待！</p>
-                    {/* <div>
+                    <div>
 						<div>请输入邀请码</div>
 						<InputItem className={styles.item__name}></InputItem>
 						<div onClick={this.handleModalTest}>提交</div>
-					</div> */}
+					</div>
+                </Modal>
+				<Modal visible={this.state.bak}
+                       transparent={true}
+                       closable={true}
+                       onClose={() => {
+                           this.setState({bak: false})
+                       }}
+                >
+                    <p>即将上线，敬请期待！</p>
                 </Modal>
             </>
         )
