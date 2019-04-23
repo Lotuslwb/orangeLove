@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -2096,14 +2096,14 @@ var isWeixinBrowser = function isWeixinBrowser() {
 
 /***/ }),
 
-/***/ 5:
+/***/ 3:
 /*!************************************!*\
   !*** multi ./pages/index/index.js ***!
   \************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/lotuslwb/Documents/MJobs/orangeLove/pages/index/index.js */"./pages/index/index.js");
+module.exports = __webpack_require__(/*! /Users/jiatinghu/Documents/hjt/jianzhi/measurement/orangeLove/pages/index/index.js */"./pages/index/index.js");
 
 
 /***/ }),
