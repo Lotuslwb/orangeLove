@@ -2137,7 +2137,7 @@ function (_Document) {
         href: "//unpkg.com/antd-mobile/dist/antd-mobile.min.css"
       }), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("link", {
         rel: "stylesheet",
-        href: "/_next/static/style.css"
+        href: "/_next/static/css/styles.chunk.css"
       })), react__WEBPACK_IMPORTED_MODULE_5___default.a.createElement("body", {
         style: {
           margin: 0

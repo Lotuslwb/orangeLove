@@ -1,14 +1,14 @@
 webpackHotUpdate("styles",{
 
-/***/ "./pages/index/index.less":
-/*!********************************!*\
-  !*** ./pages/index/index.less ***!
-  \********************************/
+/***/ "./pages/question/index.less":
+/*!***********************************!*\
+  !*** ./pages/question/index.less ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
-module.exports = {"page":"_2QOLlrrR3-6oD0r2jJtvAg","spe":"_3b2YO3yNhE34gVeq6FtnJv","sub-title":"_1mYiI1dSDy4I651dtJpfDB","option":"_1c7P5bqhBduD1A2Aar5-4w","option__count":"_1JpIgnd30Ur3FmmpAHvA83"};;
+module.exports = {"page":"_12_1uEmeM-G5uVARam733R","number":"_2UwwFQ0HdYFbDof4LGZTEs","card":"jQF9VAkEHTcZsqyEr95JR","card__body":"_3gPzEVBYh7jawRKfXfaLVV","question":"_1rG27Es-t5XEFzcqA0PqdK","answer":"qRV73XFHCr0ptK1epBN0h","answer__chosen":"_3lw-LCfzDKpGpH5h29r1w5","card__footer":"CFN0NNDi3jcXoVXkCyvzG","step":"_1iDuMteaJQpfNc53F1oM37","center":"_3z-VR5GGPm3vlGELNhvaBa"};;
     if (true) {
       var injectCss = function injectCss(prev, href) {
         var link = prev.cloneNode();
@@ -30,7 +30,7 @@ module.exports = {"page":"_2QOLlrrR3-6oD0r2jJtvAg","spe":"_3b2YO3yNhE34gVeq6FtnJ
           .querySelectorAll("link[href][rel=stylesheet]")
           .forEach(function(link) {
             if (!link.href.match(prefix) || link.stale) return;
-            injectCss(link, link.href.split("?")[0] + "?unix=1555991733989");
+            injectCss(link, link.href.split("?")[0] + "?unix=1555994452510");
           });
       }
     }
@@ -39,4 +39,4 @@ module.exports = {"page":"_2QOLlrrR3-6oD0r2jJtvAg","spe":"_3b2YO3yNhE34gVeq6FtnJ
 /***/ })
 
 })
-//# sourceMappingURL=styles.2a3301eb1385d9aadced.hot-update.js.map
+//# sourceMappingURL=styles.a7f843dfa8c6d961768e.hot-update.js.map
