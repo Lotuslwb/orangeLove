@@ -1,3 +1,4 @@
+npm run build
 cd ../
-zip -r orangeLove.zip orangeLove
-scp /Users/lotuslwb/Documents/MJobs/orangeLove.zip root@47.99.64.137:/data/www/
+zip -r www.zip orangeLove
+scp /Users/lotuslwb/Documents/MJobs/www.zip root@47.99.64.137:/data/
