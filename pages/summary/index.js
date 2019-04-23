@@ -93,7 +93,7 @@ class Page extends React.Component {
         }
 
 	}
-	
+
 	showModal = attrId =>{
 		const {testVisiable} = this.state;
 		this.setState({
@@ -183,7 +183,8 @@ class Page extends React.Component {
                     </div>
                 </div>
                 <div className={styles.sectionMid}>
-                    <div style={{fontSize: '20px', textAlign: 'center'}}>八大智能详情</div>
+                    <div style={{fontSize: '20px', textAlign: 'center'}}>优势智能</div>
+                    <div className={styles.tips}>* 劣势智能如何增强请查看专业版报告</div>
                     <div className={styles.row}>
                         {attrList[0] && (
                             <div key={`attr-0`}
@@ -265,8 +266,8 @@ class Page extends React.Component {
                     </div>
                 </div>
                 <div className={styles.sectionBottom}>
-                    <img style={{width: '100%'}} src={'/static/img/result_work.png'}/>
-                    <img style={{width: '100%'}} src={'/static/img/result_pro.png'}/>
+                    <img style={{width: '100%'}} src={'/static/img/result_work.png'} onClick={this.handleTest.bind(this, 'pic1')}/>
+                    <img style={{width: '100%'}} src={'/static/img/result_pro.png'} onClick={this.handleTest.bind(this, 'pic2')}/>
                 </div>
                 {/*<img className={styles.page} src='/static/img/page/result_01.png'/>*/}
                 {/*<img onClick={this.handleTest} className={styles.page} src='/static/img/page/result_02.png'/>*/}
@@ -300,17 +301,19 @@ class Page extends React.Component {
                 </Modal>
 				<Modal visible={this.state.testVisiable}
                        transparent={true}
-                       maskClosable={true}
-                       platform={'android'}
+                    //    maskClosable={true}
+                    //    platform={'android'}
+                       closable={true}
                        onClose={() => {
                            this.setState({testVisiable: false})
                        }}
                 >
-                    <div>
+                    <p>即将上线，敬请期待！</p>
+                    {/* <div>
 						<div>请输入邀请码</div>
 						<InputItem className={styles.item__name}></InputItem>
 						<div onClick={this.handleModalTest}>提交</div>
-					</div>
+					</div> */}
                 </Modal>
             </>
         )
