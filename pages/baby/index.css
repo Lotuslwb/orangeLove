@@ -1,0 +1,73 @@
+body {
+  background: #e0e5ec;
+}
+.page {
+  padding: 0 15px;
+}
+.head {
+  width: 100%;
+}
+.card {
+  margin-top: 20px;
+  border-radius: 10px;
+  border-top: 10px solid #f7bd3b;
+}
+.card__body {
+  padding: 15px 15px 50px 15px;
+  text-align: center;
+  background: #fff;
+  color: #507DDC;
+  border-radius: 0 0 10px 10px;
+  position: relative;
+}
+.card__body .submit {
+  background: #f7bd3b;
+  border: 2px solid #fee9ba;
+  color: #fff;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  margin-left: -40px;
+  margin-bottom: -40px;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 40px;
+}
+.card__body .item {
+  margin-top: 10px;
+}
+.card__body .item .label {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.card__body .item .gender-wrapper {
+  position: relative;
+}
+.card__body .item .item__gender {
+  width: 50px;
+  height: 50px;
+}
+.card__body .item .item__checked {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  display: none;
+}
+.card__body .item .item__name {
+  width: 50%;
+  border: 1px solid #507DDC;
+  height: 30px;
+  border-radius: 15px;
+  margin: 0 auto;
+}
+.show {
+  display: block;
+}
+.inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
