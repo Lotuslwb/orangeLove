@@ -317,7 +317,7 @@ class Page extends React.Component {
                         <InputItem className={styles.item__name} placeholder="请输入邀请码"></InputItem>
                         <div className={styles.inline}>
                             <Button onClick={this.handleModalTest}>确定</Button>
-                            <Button onClick={this.handleModalTest} type="primary">支付</Button>
+                            <Button onClick={this.handleModalTest} type="primary" style={{background: '#fca34a'}}>支付</Button>
                         </div>
                     </div>
                 </Modal>
