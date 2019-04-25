@@ -35,6 +35,7 @@ class Page extends React.Component {
             mobile: '',
             gender: 1,
             hasReport: false,
+            hasInfo: false,
         };
     }
 
@@ -43,11 +44,18 @@ class Page extends React.Component {
             const data = await agent.Baby.get();
             if (data && data.userId) {
                 this.setState({
-                    hasReport: true,
+                    hasInfo: true,
                     birthday: new Date(data.birthday),
                     gender: data.gender,
                     name: data.name,
                     mobile: data.mobile,
+                })
+            }
+            const report = await agent.Baby.getReport();
+            // 有报告，后期改成查询用户信息接口
+            if (report.attrList) {
+                this.setState({
+                    hasReport: true,
                 })
             }
         } catch (e) {
@@ -90,8 +98,8 @@ class Page extends React.Component {
 
     handleSubmit = async () => {
         try {
-            const { hasReport, birthday, name, mobile, gender } = this.state;
-            if (hasReport) {
+            const { hasInfo, birthday, name, mobile, gender } = this.state;
+            if (hasInfo) {
                 Router.push('/summary');
             } else {
                 // 提交前再次校验
@@ -121,18 +129,18 @@ class Page extends React.Component {
     //     }
     // }
     chooseGender = (gender) => {
-        if (!this.state.hasReport) {
+        if (!this.state.hasInfo) {
             this.setState({
                 gender,
             })
         }
     }
     render() {
-        const { hasReport, birthday, gender, phoneError, mobile } = this.state;
+        const { hasReport, hasInfo, birthday, gender, phoneError, mobile } = this.state;
         const CustomChildren = ({ extra, onClick, children }) => (
             <div
                 onClick={onClick}
-                style={{ backgroundColor: '#fff', height: '45px', lineHeight: '45px', padding: '0 15px' }}
+                style={{ backgroundColor: '#fff', height: '45px', lineHeight: '45px', padding: '0 15px', color: hasInfo ? '#bbb' : '#507DDC' }}
             >{extra}</div>
         );
         return (
@@ -158,7 +166,7 @@ class Page extends React.Component {
                                 value={birthday}
                                 onChange={this.changeBirthday}
                                 extra="请点击选择"
-                                disabled={hasReport}
+                                disabled={hasInfo}
                             >
                                 <CustomChildren />
                             </DatePicker>
@@ -183,7 +191,7 @@ class Page extends React.Component {
                                 placeholder=""
                                 value={this.state.name}
                                 onChange={v => this.setState({ name: v })}
-                                disabled={hasReport}
+                                disabled={hasInfo}
                             >
                             </InputItem>
                         </div>
@@ -197,7 +205,7 @@ class Page extends React.Component {
                                 error={phoneError}
                                 onErrorClick={this.onPhoneErrorClick}
                                 onChange={this.changePhone}
-                                disabled={hasReport}
+                                disabled={hasInfo}
                             >
                             </InputItem>
                         </div>

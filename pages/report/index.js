@@ -94,11 +94,13 @@ class Page extends React.Component {
                         </div>
                     </div>
                 </div>
+                <div className={styles['card-title']}>教育游戏</div>
                 <Carousel className={styles.carousel}
                           cellSpacing={10}
                           slideWidth={0.7}
                           dots={false}
                           infinite
+                          frameOverflow="auto"
                 >
                     {games.map((game, index) => (
                         <div className={styles.carouselCard}>
