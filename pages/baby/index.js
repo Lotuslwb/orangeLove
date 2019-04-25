@@ -31,8 +31,8 @@ class Page extends React.Component {
         this.state = {
             birthday: new Date(),
             phoneError: false,
-            name: '测试',
-            phone: '13388283940',
+            name: '',
+            mobile: '',
             gender: 1,
             hasReport: false,
         };
@@ -40,57 +40,16 @@ class Page extends React.Component {
 
     async componentDidMount() {
         try {
-            const report = await agent.Baby.getReport();
-            // 有报告，后期改成查询用户信息接口
-            if (report.attrList) {
+            const data = await agent.Baby.get();
+            if (data && data.userId) {
                 this.setState({
                     hasReport: true,
+                    birthday: new Date(data.birthday),
+                    gender: data.gender,
+                    name: data.name,
+                    mobile: data.mobile,
                 })
             }
-            let labels = [];
-            const emptyLabels = [];
-            const attrData = [];
-            (report.attrList || []).forEach(attr => {
-                labels.push(attr.attrName);
-                attrData.push(attr.score);
-                emptyLabels.push('');
-            });
-            if (report.shareCount < 3) {
-                labels = emptyLabels
-            }
-            const radarData = {
-                labels,
-                datasets: [
-                    {
-                        label: "My Second dataset",
-                        fillColor: "rgba(234,135,68,0.2)",
-                        strokeColor: "rgba(234,135,68,.8)",
-                        pointColor: "rgba(234,135,68,1)",
-                        pointStrokeColor: "#fff",
-                        pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(151,187,205,1)",
-                        data: attrData
-                    }
-                ]
-            };
-            const doughnutData = [
-                {
-                    value: 90,
-                    color: "#57ddb1",
-                    highlight: "#57ddb1",
-                    label: '90'
-                },
-                {
-                    value: 10,
-                    color: "rgba(255, 255, 255, 0)",
-                    highlight: "#5AD3D1",
-                    label: "Green"
-                }];
-            this.setState({
-                report,
-                radarData,
-                doughnutData,
-            });
         } catch (e) {
 
         } finally {
@@ -115,7 +74,7 @@ class Page extends React.Component {
             });
         }
         this.setState({
-            phone: value,
+            mobile: value,
         });
     }
     changeBirthday = (value) => {
@@ -131,18 +90,18 @@ class Page extends React.Component {
 
     handleSubmit = async () => {
         try {
-            const { hasReport, birthday, name, phone, gender } = this.state;
+            const { hasReport, birthday, name, mobile, gender } = this.state;
             if (hasReport) {
                 Router.push('/summary');
             } else {
                 // 提交前再次校验
-                if (phone.replace(/\s/g, '').length < 11) {
+                if (mobile.replace(/\s/g, '').length < 11) {
                     Toast.info('请输入正确的手机号');
                     return
                 }
                 const params = {
                     birthday: birthday.getTime(),
-                    name, gender, phone
+                    name, gender, mobile
                 };
                 const data = await agent.Baby.add(params);
                 Router.push('/question');
@@ -169,7 +128,7 @@ class Page extends React.Component {
         }
     }
     render() {
-        const { hasReport, birthday, gender, phoneError, phone } = this.state;
+        const { hasReport, birthday, gender, phoneError, mobile } = this.state;
         const CustomChildren = ({ extra, onClick, children }) => (
             <div
                 onClick={onClick}
@@ -234,7 +193,7 @@ class Page extends React.Component {
                                 type="phone"
                                 className={styles.item__name}
                                 placeholder=""
-                                value={phone}
+                                value={mobile}
                                 error={phoneError}
                                 onErrorClick={this.onPhoneErrorClick}
                                 onChange={this.changePhone}
