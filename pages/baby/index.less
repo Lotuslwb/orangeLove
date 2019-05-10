@@ -1,4 +1,4 @@
-@import "../../styles/less/_index.less";
+@import (reference) '../../styles/less/_index.less';
 
 body {
   background: @page-background-color;
@@ -15,9 +15,21 @@ body {
 .card {
   margin-top: 20px;
   border-radius: 10px;
-  border-top: 10px solid #f7bd3b;
+  border-top: 6px solid #f7bd3b;
 
   &__body {
+    // &::before {
+    //   content: '';
+    //   display: absolute;
+    //   top: 0;
+    //   left: 50%;
+    //   transform: translateX(-50%);
+    //   width: 0;
+    //   height: 0;
+    //   border-width: 10px 10px 0;
+    //   border-style: solid;
+    //   border-color: #f7bd3b transparent transparent; /*灰 透明 透明 */
+    // }
     padding: 15px 15px 50px 15px;
     text-align: center;
     background: #fff;
@@ -54,6 +66,7 @@ body {
 
       .gender-wrapper {
         position: relative;
+        // display: flex;
       }
       .item__gender {
         width: 50px;
@@ -68,11 +81,19 @@ body {
       }
 
       .item__name {
-        width: 50%;
-        border: 1px solid @main-color;
-        height: 30px;
-        border-radius: 15px;
+        width: 65%;
+        border: 2px solid @main-color;
+        // height: 30px;
+        border-radius: 25px;
         margin: 0 auto;
+      }
+      :global {
+        .am-list-item {
+          min-height: 36px;
+        }
+        .am-list-item.am-input-item {
+          height: 36px;
+        }
       }
     }
   }
@@ -83,5 +104,11 @@ body {
 .inline {
   display: flex;
   align-items: center;
-  justify-content: center;
+  width: 50%;
+  margin: auto;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+.text {
+  font-size: 20px;
 }

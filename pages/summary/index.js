@@ -268,7 +268,7 @@ class Page extends React.Component {
                 </div>
                 <div className={styles.sectionBottom}>
                     <img style={{ width: '100%' }} src={'/static/img/result_work.png'} onClick={() => { this.setState({ bak: true }) }} />
-                    <img style={{ width: '100%' }} src={'/static/img/result_pro.png'} onClick={() => { this.setState({ bak: true }) }} />
+                    <img style={{ width: '100%' }} src={'/static/img/result_pro.png'} onClick={() => { Router.push('/profession'); }} />
                 </div>
                 {/*<img className={styles.page} src='/static/img/page/result_01.png'/>*/}
                 {/*<img onClick={this.handleTest} className={styles.page} src='/static/img/page/result_02.png'/>*/}
