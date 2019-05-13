@@ -449,7 +449,7 @@ class Page extends React.Component {
             <div className={styles['modal-title-wrapper']}>
               <div className={styles['modal-title']}>请输入邀请码解锁报告</div>
               <div className={styles['modal-title']}>
-                或支付<span className={styles.emphasize}>￥1.99</span>查看
+                或支付<span className={styles.emphasize}>￥199</span>查看
               </div>
             </div>
             <InputItem
