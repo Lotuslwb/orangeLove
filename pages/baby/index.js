@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  inject,
-  observer
-} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import Link from 'next/link';
 import {
   NavBar,
@@ -23,9 +20,7 @@ import {
   DatePicker,
   Modal
 } from 'antd-mobile';
-import {
-  createForm
-} from 'rc-form';
+import { createForm } from 'rc-form';
 import moment from 'moment';
 import classNames from 'classnames';
 import PageWrapper from '@components/PageWrapper';
@@ -42,9 +37,7 @@ class Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const {
-      query
-    } = this.props;
+    const { query } = this.props;
     if (query.voteId) {
       this.voteId = query.voteId;
     }
@@ -79,7 +72,9 @@ class Page extends React.Component {
           hasReport: true
         });
       }
-    } catch (e) {} finally {}
+    } catch (e) {
+    } finally {
+    }
   }
 
   onPhoneErrorClick = () => {
@@ -104,8 +99,8 @@ class Page extends React.Component {
   changeBirthday = value => {
     if (
       moment(value)
-      .add(6, 'y')
-      .isAfter(new Date())
+        .add(6, 'y')
+        .isAfter(new Date())
     ) {
       this.setState({
         birthday: value
@@ -117,14 +112,7 @@ class Page extends React.Component {
 
   handleSubmit = async () => {
     try {
-      const {
-        hasReport,
-        hasInfo,
-        birthday,
-        name,
-        mobile,
-        gender
-      } = this.state;
+      const { hasReport, hasInfo, birthday, name, mobile, gender } = this.state;
       if (hasReport) {
         Router.push('/summary');
       } else {
@@ -144,7 +132,9 @@ class Page extends React.Component {
         }
         Router.push('/question');
       }
-    } catch (e) {} finally {}
+    } catch (e) {
+    } finally {
+    }
   };
   // validateDatePicker = (rule, date, callback) => {
   //     if (moment(date).add(1, 'y').isAfter(new Date())) {
@@ -169,216 +159,135 @@ class Page extends React.Component {
       phoneError,
       mobile
     } = this.state;
-    const CustomChildren = ({
-      extra,
-      onClick,
-      children
-    }) => ( <
-      div onClick = {
-        onClick
-      }
-      className = {
-        styles.text
-      }
-      style = {
-        {
+    const CustomChildren = ({ extra, onClick, children }) => (
+      <div
+        onClick={onClick}
+        className={styles.text}
+        style={{
           backgroundColor: '#fff',
           height: '40px',
           lineHeight: '40px',
           color: hasInfo ? '#bbb' : '#507DDC'
-        }
-      } >
-      {
-        extra
-      } <
-      /div>
+        }}
+      >
+        {extra}{' '}
+      </div>
     );
-    return ( <
-      div className = {
-        styles.page
-      } >
-      <
-      div >
-      <
-      img className = {
-        styles.head
-      }
-      src = "/static/img/baby/head.png" / >
-      <
-      /div> <
-      div className = {
-        styles.card
-      } >
-      <
-      div className = {
-        styles.card__body
-      } >
-      <
-      div className = {
-        styles.item
-      } >
-      <
-      div className = {
-        styles.label
-      } > 宝宝生日 < /div> <
-      DatePicker
-      // {...getFieldProps('birthday', {
-      //     initialValue: new Date(),
-      //     rules: [
-      //         { required: true, message: '请选择出生日期' },
-      //         { validator: this.validateDatePicker },
-      //     ],
-      // })}
-      mode = "date"
-      format = "YYYY-MM-DD"
-      title = "请选择日期"
-      value = {
-        birthday
-      }
-      onChange = {
-        this.changeBirthday
-      }
-      extra = "请点击选择"
-      disabled = {
-        hasInfo
-      } >
-      <
-      CustomChildren / >
-      <
-      /DatePicker> <
-      /div> <
-      div className = {
-        styles.item
-      } >
-      <
-      div className = {
-        styles.label
-      } > 宝宝性别 < /div> <
-      div className = {
-        styles.inline
-      } >
-      <
-      div className = {
-        styles['gender-wrapper']
-      }
-      onClick = {
-        () => this.chooseGender(1)
-      } >
-      <
-      img className = {
-        styles.item__gender
-      }
-      src = "/static/img/icon/boy.png" /
-      >
-      <
-      div className = {
-        styles.text
-      }
-      style = {
-        gender == 1 ? {
-          color: '#3366cc'
-        } : {
-          color: '#d9d9d9'
-        }
-      } >
-      男 <
-      /div> {
-        /* <img className={styles.item__checked} style={gender == 1 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */ } <
-      /div> <
-      div className = {
-        styles['gender-wrapper']
-      }
-      onClick = {
-        () => this.chooseGender(2)
-      } >
-      <
-      img className = {
-        styles.item__gender
-      }
-      src = "/static/img/icon/girl.png" /
-      >
-      <
-      div className = {
-        styles.text
-      }
-      style = {
-        gender == 2 ? {
-          color: '#3366cc'
-        } : {
-          color: '#d9d9d9'
-        }
-      } >
-      女 <
-      /div> {
-        /* <img className={styles.item__checked} style={gender == 2 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */ } <
-      /div> <
-      /div> <
-      /div> <
-      div className = {
-        styles.item
-      } >
-      <
-      div className = {
-        styles.label
-      } > 宝宝昵称 < /div> <
-      InputItem className = {
-        styles.item__name
-      }
-      placeholder = ""
-      value = {
-        this.state.name
-      }
-      onChange = {
-        v => this.setState({
-          name: v
-        })
-      }
-      disabled = {
-        hasInfo
-      }
-      /> <
-      /div> <
-      div className = {
-        styles.item
-      } >
-      <
-      div className = {
-        styles.label
-      } > 手机号 < /div> <
-      InputItem type = "phone"
-      className = {
-        styles.item__name
-      }
-      placeholder = ""
-      value = {
-        mobile
-      }
-      error = {
-        phoneError
-      }
-      onErrorClick = {
-        this.onPhoneErrorClick
-      }
-      onChange = {
-        this.changePhone
-      }
-      disabled = {
-        hasInfo
-      }
-      /> <
-      /div> <
-      div className = {
-        styles.submit
-      }
-      onClick = {
-        this.handleSubmit
-      } > {
-        hasReport ? '查看报告' : '开始测试'
-      } <
-      /div> <
-      /div> <
-      /div> <
-      /div>
+    return (
+      <div className={styles.page}>
+        <div>
+          <img className={styles.head} src="/static/img/baby/head.png" />
+        </div>{' '}
+        <div className={styles.card}>
+          <div className={styles.card__body}>
+            <div className={styles.item}>
+              <div className={styles.label}> 宝宝生日 </div>{' '}
+              <DatePicker
+                // {...getFieldProps('birthday', {
+                //     initialValue: new Date(),
+                //     rules: [
+                //         { required: true, message: '请选择出生日期' },
+                //         { validator: this.validateDatePicker },
+                //     ],
+                // })}
+                mode="date"
+                format="YYYY-MM-DD"
+                title="请选择日期"
+                value={birthday}
+                onChange={this.changeBirthday}
+                extra="请点击选择"
+                disabled={hasInfo}
+              >
+                <CustomChildren />
+              </DatePicker>{' '}
+            </div>{' '}
+            <div className={styles.item}>
+              <div className={styles.label}> 宝宝性别 </div>{' '}
+              <div className={styles.inline}>
+                <div
+                  className={styles['gender-wrapper']}
+                  onClick={() => this.chooseGender(1)}
+                >
+                  <img
+                    className={styles.item__gender}
+                    src="/static/img/icon/boy.png"
+                  />
+                  <div
+                    className={styles.text}
+                    style={
+                      gender == 1
+                        ? {
+                            color: '#3366cc'
+                          }
+                        : {
+                            color: '#d9d9d9'
+                          }
+                    }
+                  >
+                    男{' '}
+                  </div>{' '}
+                  {/* <img className={styles.item__checked} style={gender == 1 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */}{' '}
+                </div>{' '}
+                <div
+                  className={styles['gender-wrapper']}
+                  onClick={() => this.chooseGender(2)}
+                >
+                  <img
+                    className={styles.item__gender}
+                    src="/static/img/icon/girl.png"
+                  />
+                  <div
+                    className={styles.text}
+                    style={
+                      gender == 2
+                        ? {
+                            color: '#3366cc'
+                          }
+                        : {
+                            color: '#d9d9d9'
+                          }
+                    }
+                  >
+                    女{' '}
+                  </div>{' '}
+                  {/* <img className={styles.item__checked} style={gender == 2 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */}{' '}
+                </div>{' '}
+              </div>{' '}
+            </div>{' '}
+            <div className={styles.item}>
+              <div className={styles.label}> 宝宝昵称 </div>{' '}
+              <InputItem
+                className={styles.item__name}
+                placeholder=""
+                value={this.state.name}
+                onChange={v =>
+                  this.setState({
+                    name: v
+                  })
+                }
+                disabled={hasInfo}
+              />{' '}
+            </div>{' '}
+            <div className={styles.item}>
+              <div className={styles.label}> 手机号 </div>{' '}
+              <InputItem
+                type="phone"
+                className={styles.item__name}
+                placeholder=""
+                value={mobile}
+                error={phoneError}
+                onErrorClick={this.onPhoneErrorClick}
+                onChange={this.changePhone}
+                disabled={hasInfo}
+              />{' '}
+            </div>{' '}
+            <div className={styles.submit} onClick={this.handleSubmit}>
+              {' '}
+              {hasReport ? '查看报告' : '开始测试'}{' '}
+            </div>{' '}
+          </div>{' '}
+        </div>{' '}
+      </div>
     );
   }
 }
