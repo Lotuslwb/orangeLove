@@ -35,7 +35,6 @@ const tokenPlugin = req => {
 };
 
 const handleErrors = err => {
-  debugger;
   // if (err && err.response && err.response.status === 401) {}
   // return err;
 };
