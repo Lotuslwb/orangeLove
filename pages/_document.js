@@ -3,7 +3,6 @@ import store from 'store';
 
 export default class extends Document {
 
-    
     render() {
         return (
             <html>
@@ -17,9 +16,9 @@ export default class extends Document {
             <Main />
             <NextScript />
             <script src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js"/>
-            <script src='http://ma.eldesign.cn/xmjssdk/vconsole.min.js'></script>
+            {/* <script src='http://ma.eldesign.cn/xmjssdk/vconsole.min.js'></script> */}
             <script>
-                var vConsole = new VConsole();
+                {/* new VConsole() */}
             </script>
             </body>
             </html>
