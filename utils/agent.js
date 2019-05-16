@@ -1,5 +1,6 @@
 import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
+import Router from 'next/router'
 import storage from "./storage";
 
 const superagent = superagentPromise(_superagent, global.Promise);
@@ -40,10 +41,15 @@ const handleErrors = err => {
 
 const responseBody = (res) => {
     const body = res.body;
-    if (body.errno === 0) {
+    if (body.errno === 401) {
+        // 跳回首页
+        Router.push('/');
+    } else if (body.errno === 0) {
         return body.data;
+    } else {
+        throw new MyError(body.errno, body.errmsg);
     }
-    throw new MyError(body.errno, body.errmsg);
+
 };
 
 const requests = {
