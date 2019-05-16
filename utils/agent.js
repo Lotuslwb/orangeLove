@@ -34,16 +34,16 @@ const tokenPlugin = req => {
 };
 
 const handleErrors = err => {
-    if (err && err.response && err.response.status === 401) {}
-    return err;
+    // if (err && err.response && err.response.status === 401) {}
+    // return err;
 };
 
 const responseBody = (res) => {
     const body = res.body;
-    if (body.flag === 1 || body.code === 0) {
+    if (body.errno === 0) {
         return body.data;
     }
-    throw new MyError(body.flag, body.message);
+    throw new MyError(body.errno, body.errmsg);
 };
 
 const requests = {
@@ -91,18 +91,20 @@ const requests = {
 
 const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 
-const host = 'http://47.99.64.137:8080/evaluation';
+const host = 'http://house.t.gegosport.com/evaluation/wx';
+// const host = 'http://47.99.64.137:8360/evaluation/wx';
+// const host = 'http://47.99.64.137:8080/evaluation';
 // const host = 'http://localhost:8080/evaluation';
 
 const Wechat = {
     getConfig: () => {
-        return requests.get(`${host}/wx_mp/config`);
+        return requests.get(`${host}/config`);
     },
     getAuthorizationUrl: () => {
-        return requests.get(`${host}/wx_mp/auth_url`);
+        return requests.get(`${host}/auth_url`);
     },
     login: (code, fromId) => {
-        return requests.get(`${host}/wx_mp/login?${fromId ? `fromId=${fromId}` : ''}`, {
+        return requests.get(`${host}/login?${fromId ? `fromId=${fromId}` : ''}`, {
             code
         });
     }
@@ -116,19 +118,19 @@ const Baby = {
         return requests.get(`${host}/baby`);
     },
     getReport: () => {
-        return requests.get(`${host}/baby/report`);
+        return requests.get(`${host}/report`);
     }
 };
 
 const Question = {
     getList: () => {
-        return requests.get(`${host}/question/list`);
+        return requests.get(`${host}/question`);
     },
     answer: (questionId, answer) => {
         return requests.post(`${host}/question/${questionId}/answer/${answer}`);
     },
     answerList: (params) => {
-        return requests.post(`${host}/question/answer`, params);
+        return requests.post(`${host}/answer`, params);
     }
 };
 
@@ -140,7 +142,7 @@ const Answer = {
 
 const Report = {
     getByAttr: attrId => {
-        return requests.get(`${host}/report/attr/${attrId}`);
+        return requests.get(`${host}/attr_report?attr=${attrId}`);
     }
 };
 

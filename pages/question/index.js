@@ -59,7 +59,7 @@ class Page extends React.Component {
     try {
       const data = await agent.Question.getList();
       this.setState({
-        questionList: data.list
+        questionList: data
       });
     } catch (e) {
     } finally {
@@ -95,7 +95,7 @@ class Page extends React.Component {
         for (let [questionId, option] of Object.entries(answerMap)) {
           answerList.push({
             questionId,
-            option
+            ...option
           });
         }
         this.setState({
@@ -124,7 +124,7 @@ class Page extends React.Component {
 
   handleChoose = async (question, choice) => {
     const { questionIndex, answerMap } = this.state;
-    answerMap[question.id] = choice;
+    answerMap[question.id] = {attr_id: question.attr_id, attr_type: question.attr_type, option: choice}
     this.setState({
       answerMap
     });
