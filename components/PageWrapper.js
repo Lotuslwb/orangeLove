@@ -39,7 +39,6 @@ const PageWrapper = (ComposedComponent) => {
                             .then(data => {
                                 storage.UserInfo.set(data);
                                 agent.Wechat.getConfig().then(config => {
-                                    debugger
                                     config.jsApiList = ['onMenuShareAppMessage'];
                                     wx.config(config);
                                     wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
