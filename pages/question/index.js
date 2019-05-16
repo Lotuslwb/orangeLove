@@ -107,9 +107,12 @@ class Page extends React.Component {
         const userInfo = storage.UserInfo.get();
         Router.push('/summary?fromId=' + userInfo.userId);
       } else {
-        this.setState({
-          questionIndex: questionIndex + 1
-        });
+        // 如果这一题没有答案，则不能跳转；有答案才能跳转
+        if (answerMap[questionIndex + 1]) {
+          this.setState({
+            questionIndex: questionIndex + 1
+          });
+        }
       }
     } catch (e) {
       console.log(e);
@@ -124,7 +127,7 @@ class Page extends React.Component {
 
   handleChoose = async (question, choice) => {
     const { questionIndex, answerMap } = this.state;
-    answerMap[question.id] = {attr_id: question.attr_id, attr_type: question.attr_type, option: choice}
+    answerMap[question.id] = {attr_id: question.attr_id, attr_type_id: question.attr_type_id, option: choice}
     this.setState({
       answerMap
     });
