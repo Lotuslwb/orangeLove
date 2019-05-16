@@ -104,7 +104,7 @@ const host = 'http://house.t.gegosport.com/evaluation/wx';
 
 const Wechat = {
     getConfig: () => {
-        const url = window.location.href;
+        const url = encodeURIComponent(window.location.href.split('#')[0]);
         return requests.get(`${host}/config?url=${url}`);
     },
     getAuthorizationUrl: () => {
