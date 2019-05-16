@@ -56,7 +56,7 @@ class Page extends React.Component {
   async componentDidMount() {
     try {
       const data = await agent.Baby.get();
-      if (data && data.userId) {
+      if (data && data.user_id) {
         this.setState({
           hasInfo: true,
           birthday: new Date(data.birthday),

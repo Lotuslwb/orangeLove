@@ -152,7 +152,7 @@ class Page extends React.Component {
             <div className={styles.number}> {questionIndex + 1}</div>
             <div className={styles.total}>/{questionList.length}</div>
           </div>
-          <div className={styles.category}>身体动觉智能</div>
+          <div className={styles.category}>{question.attrName}</div>
         </div>
         <div className={styles['progress-bar']}>
           <div
