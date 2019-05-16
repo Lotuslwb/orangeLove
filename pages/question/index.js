@@ -34,7 +34,6 @@ import styles from './index.less';
 import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
-import Question from '../../constants/questions';
 
 const RadioItem = Radio.RadioItem;
 
@@ -100,9 +99,10 @@ class Page extends React.Component {
     try {
       const {
         questionIndex,
-        answerMap
+        answerMap,
+        questionList
       } = this.state;
-      if (questionIndex >= Question.count() - 1) {
+      if (questionIndex >= questionList.length - 1) {
         const answerList = [];
         for (let [questionId, option] of Object.entries(answerMap)) {
           answerList.push({
