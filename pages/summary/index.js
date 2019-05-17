@@ -161,9 +161,33 @@ class Page extends React.Component {
     this.setState({ posterVisible: true });
   };
 
+  renderPoster = (attr) => {
+    return (
+      <>
+        <div className={styles.mask}></div>
+        <div className={styles.md}>
+          <div className={styles['md-close']} onClick={() => {
+            this.setState({ posterVisible: false });
+          }}>
+            <img src="/static/img/close.png" alt="" />
+          </div>
+          <div className={styles['md-content']}>
+            <img src={`/static/img/poster/${attr}.jpg`} className={styles.post}/>
+          </div>
+        </div>
+        <div className={styles['md-tips']}>
+          <div className={styles.line}>长按保存此图到手机</div>
+          <div className={styles.line}>发送到朋友圈或好友</div>
+        </div>
+      </>
+    )
+  }
+
   render() {
     const { report = {}, doughnutData, radarData } = this.state;
     const attrList = report.attrList || [];
+    if (!attrList.length) return null;
+    const attr = attrList[0].attrId;
     // const chartData = {
     //     labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
     //     datasets: [
@@ -203,7 +227,7 @@ class Page extends React.Component {
               return <div>{sentence}</div>;
             })}
           </div>
-          {/*<img src='/static/img/btn_poster.png' onClick={this.handleOpenPoster.bind(this)}*/}
+          <img src='/static/img/btn_poster.png' class={styles.showoff} onClick={this.handleOpenPoster.bind(this)}></img>
           {/*style={{marginTop: '20px', width: '280px', height: '64px'}}/>*/}
         </div>
         <div className={styles.sectionBody}>
@@ -424,17 +448,19 @@ class Page extends React.Component {
             />
           </div>
         )}
-        <Modal
+        {this.state.posterVisible && this.renderPoster(attr)}
+        {/* <Modal
           visible={this.state.posterVisible}
           transparent={true}
-          maskClosable={true}
+          maskClosable={false}
           platform={'android'}
+          closable={true}
           onClose={() => {
             this.setState({ posterVisible: false });
           }}
         >
-          <img style={{ width: '100%' }} src={'/static/img/poster01.png'} />
-        </Modal>
+          <img style={{ width: '100%' }} src={`/static/img/poster/${attr}.jpg`} />
+        </Modal> */}
         <Modal
           visible={this.state.testVisiable}
           transparent={true}

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  inject,
-  observer
-} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import Link from 'next/link';
 import {
   NavBar,
@@ -24,9 +21,7 @@ import {
   Modal,
   ActivityIndicator
 } from 'antd-mobile';
-import {
-  createForm
-} from 'rc-form';
+import { createForm } from 'rc-form';
 import classNames from 'classnames';
 import PageWrapper from '@components/PageWrapper';
 import agent from '@utils/agent';
@@ -42,9 +37,7 @@ class Page extends React.Component {
   constructor(props) {
     super(props);
 
-    const {
-      query
-    } = this.props;
+    const { query } = this.props;
     let questionIndex = 0;
     if (query.qidx) {
       questionIndex = Number(query.qidx);
@@ -67,7 +60,9 @@ class Page extends React.Component {
       this.setState({
         questionList: data
       });
-    } catch (e) {} finally {}
+    } catch (e) {
+    } finally {
+    }
   }
 
   onChange = value => {
@@ -82,9 +77,7 @@ class Page extends React.Component {
   };
 
   handlePrev = () => {
-    const {
-      questionIndex
-    } = this.state;
+    const { questionIndex } = this.state;
     if (questionIndex <= 0) {
       return;
     }
@@ -97,11 +90,7 @@ class Page extends React.Component {
 
   handleNext = async () => {
     try {
-      const {
-        questionIndex,
-        answerMap,
-        questionList
-      } = this.state;
+      const { questionIndex, answerMap, questionList } = this.state;
       if (questionIndex >= questionList.length - 1) {
         const answerList = [];
         for (let [questionId, option] of Object.entries(answerMap)) {
@@ -116,8 +105,7 @@ class Page extends React.Component {
         await agent.Question.answerList({
           answerList
         });
-        const userInfo = storage.UserInfo.get();
-        Router.push('/summary?fromId=' + userInfo.userId);
+        Router.push('/summary');
       } else {
         let currentQ = Object.entries(answerMap)[questionIndex];
         // 如果这一题没有答案，则不能跳转；有答案才能跳转
@@ -139,14 +127,12 @@ class Page extends React.Component {
   };
 
   handleChoose = async (question, choice) => {
-    const {
-      answerMap
-    } = this.state;
+    const { answerMap } = this.state;
     answerMap[question.id] = {
       attr_id: question.attr_id,
       attr_type_id: question.attr_type_id,
       option: choice
-    }
+    };
     this.setState({
       answerMap
     });
@@ -163,160 +149,97 @@ class Page extends React.Component {
   };
 
   render() {
-    const {
-      loading,
-      questionIndex,
-      answerMap,
-      questionList = []
-    } = this.state;
+    const { loading, questionIndex, answerMap, questionList = [] } = this.state;
+    if (!questionList.length) return null;
     const question = questionList[questionIndex] || {
       id: 0,
       name: ''
     };
+    const selected = answerMap[question.id] && answerMap[question.id].option;
     const proActive = ((questionIndex + 1) / questionList.length) * 100;
-    return ( <
-      div className = {
-        styles.page
-      } > {
-        loading && < ActivityIndicator toast text = "正在加载" / >
-      } <
-      div className = {
-        styles.header
-      } >
-      <
-      div className = {
-        styles['progress-num']
-      } >
-      <
-      div className = {
-        styles.number
-      } > {
-        questionIndex + 1
-      } < /div> <
-      div className = {
-        styles.total
-      } > /{questionList.length}</div >
-      <
-      /div> <
-      div className = {
-        styles.category
-      } > {
-        question.attrName
-      } < /div> < /
-      div > <
-      div className = {
-        styles['progress-bar']
-      } >
-      <
-      div className = {
-        styles['progress-active']
-      }
-      style = {
-        {
-          width: proActive + '%'
-        }
-      }
-      /> < /
-      div > {
-        /* <div className={styles.number}> {questionIndex + 1} / {questionList.length}</div> */
-      } <
-      div className = {
-        styles.card
-      } >
-      <
-      div className = {
-        styles.card__body
-      } >
-      <
-      div className = {
-        styles.question
-      } > {
-        question.name
-      } < /div> <
-      div onClick = {
-        this.handleChoose.bind(this, question, 'A')
-      }
-      className = {
-        'A' === answerMap[question.id] ?
-        styles.answer__chosen : styles.answer
-      } >
-      完全能做到 <
-      /div> <
-      div onClick = {
-        this.handleChoose.bind(this, question, 'B')
-      }
-      className = {
-        'B' === answerMap[question.id] ?
-        styles.answer__chosen : styles.answer
-      } >
-      有时能做到， 有时不能做到 <
-      /div> <
-      div onClick = {
-        this.handleChoose.bind(this, question, 'C')
-      }
-      className = {
-        'C' === answerMap[question.id] ?
-        styles.answer__chosen : styles.answer
-      } >
-      完全做不到 <
-      /div> <
-      div onClick = {
-        this.handleChoose.bind(this, question, 'D')
-      }
-      className = {
-        'D' === answerMap[question.id] ?
-        styles.answer__chosen : styles.answer
-      } >
-      不清楚 <
-      /div> < /
-      div > {
-        /*<div className={styles.card__footer}>*/
-      } {
-        /*</div>*/
-      } <
-      /div> <
-      div className = {
-        styles.step
-      } >
-      <
-      div className = {
-        styles['action-wp']
-      }
-      onClick = {
-        this.handlePrev
-      } >
-      <
-      img src = "/static/img/prev.png"
-      className = {
-        classNames(styles.icon, styles.prev)
-      }
-      /> <
-      div className = {
-        styles.text
-      } >
-      上一题 <
-      /div> < /
-      div > <
-      div className = {
-        styles['action-wp']
-      }
-      onClick = {
-        this.handleNext
-      } >
-      <
-      div className = {
-        styles.text
-      } >
-      下一题 <
-      /div> <
-      img src = "/static/img/prev.png"
-      className = {
-        classNames(styles.icon, styles.next)
-      }
-      /> < /
-      div > <
-      /div> < /
-      div >
+    return (
+      <div className={styles.page}>
+        {' '}
+        {loading && <ActivityIndicator toast text="正在加载" />}{' '}
+        <div className={styles.header}>
+          <div className={styles['progress-num']}>
+            <div className={styles.number}> {questionIndex + 1} </div>{' '}
+            <div className={styles.total}> /{questionList.length}</div>
+          </div>{' '}
+          <div className={styles.category}> {question.attrName} </div>{' '}
+        </div>{' '}
+        <div className={styles['progress-bar']}>
+          <div
+            className={styles['progress-active']}
+            style={{
+              width: proActive + '%'
+            }}
+          />{' '}
+        </div>{' '}
+        {/* <div className={styles.number}> {questionIndex + 1} / {questionList.length}</div> */}{' '}
+        <div className={styles.card}>
+          <div className={styles.card__body}>
+            <div className={styles.question}> {question.name} </div>{' '}
+            <div
+              onClick={this.handleChoose.bind(this, question, 'A')}
+              className={
+                'A' === selected
+                  ? styles.answer__chosen
+                  : styles.answer
+              }
+            >
+              完全能做到{' '}
+            </div>{' '}
+            <div
+              onClick={this.handleChoose.bind(this, question, 'B')}
+              className={
+                'B' === selected
+                  ? styles.answer__chosen
+                  : styles.answer
+              }
+            >
+              有时能做到， 有时不能做到{' '}
+            </div>{' '}
+            <div
+              onClick={this.handleChoose.bind(this, question, 'C')}
+              className={
+                'C' === selected
+                  ? styles.answer__chosen
+                  : styles.answer
+              }
+            >
+              完全做不到{' '}
+            </div>{' '}
+            <div
+              onClick={this.handleChoose.bind(this, question, 'D')}
+              className={
+                'D' === selected
+                  ? styles.answer__chosen
+                  : styles.answer
+              }
+            >
+              不清楚{' '}
+            </div>{' '}
+          </div>{' '}
+          {/*<div className={styles.card__footer}>*/} {/*</div>*/}{' '}
+        </div>{' '}
+        <div className={styles.step}>
+          <div className={styles['action-wp']} onClick={this.handlePrev}>
+            <img
+              src="/static/img/prev.png"
+              className={classNames(styles.icon, styles.prev)}
+            />{' '}
+            <div className={styles.text}>上一题 </div>{' '}
+          </div>{' '}
+          <div className={styles['action-wp']} onClick={this.handleNext}>
+            <div className={styles.text}>下一题 </div>{' '}
+            <img
+              src="/static/img/prev.png"
+              className={classNames(styles.icon, styles.next)}
+            />{' '}
+          </div>{' '}
+        </div>{' '}
+      </div>
     );
   }
 }
