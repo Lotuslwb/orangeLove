@@ -448,7 +448,6 @@ class Page extends React.Component {
             />
           </div>
         )}
-        {this.state.posterVisible && this.renderPoster(attr)}
         {/* <Modal
           visible={this.state.posterVisible}
           transparent={true}
@@ -513,6 +512,7 @@ class Page extends React.Component {
         >
           <p>即将上线，敬请期待！</p>
         </Modal>
+        {this.state.posterVisible && this.renderPoster(attr)}
       </>
     );
   }
