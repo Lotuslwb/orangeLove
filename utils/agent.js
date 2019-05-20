@@ -2,6 +2,7 @@ import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
 import Router from 'next/router';
 import store from 'store';
+import { Toast } from 'antd-mobile';
 import storage from './storage';
 
 const superagent = superagentPromise(_superagent, global.Promise);
@@ -50,8 +51,12 @@ const responseBody = res => {
   } else if (body.errno === 0) {
     return body.data;
   } else {
-    throw new MyError(body.errno, body.errmsg);
+    Toast.info(body.errmsg);
+    return null;
   }
+  // else {
+  //   throw new MyError(body.errno, body.errmsg);
+  // }
 };
 
 const requests = {
@@ -128,6 +133,9 @@ const Baby = {
   },
   getReport: () => {
     return requests.get(`${host}/report`);
+  },
+  unlock: params => {
+    return requests.post(`${host}/unlock`, params);
   }
 };
 
@@ -155,10 +163,17 @@ const Report = {
   }
 };
 
+const System = {
+  getGroup: (id) => {
+    return requests.get(`${host}/group?groupid=${id}`);
+  }
+};
+
 export default {
   Wechat,
   Baby,
   Question,
   Answer,
-  Report
+  Report,
+  System
 };

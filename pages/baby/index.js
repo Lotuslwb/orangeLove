@@ -49,6 +49,7 @@ class Page extends React.Component {
       mobile: '',
       gender: 1,
       hasReport: false,
+      needUpdate: false,
       hasInfo: false
     };
   }
@@ -62,14 +63,9 @@ class Page extends React.Component {
           birthday: new Date(data.birthday),
           gender: data.gender,
           name: data.name,
-          mobile: data.mobile
-        });
-      }
-      const report = await agent.Baby.getReport();
-      // 有报告，后期改成查询用户信息接口
-      if (report.attrList) {
-        this.setState({
-          hasReport: true
+          mobile: data.mobile,
+          hasReport: !!data.hasReport,
+          needUpdate: data.needUpdate,
         });
       }
     } catch (e) {
@@ -112,25 +108,30 @@ class Page extends React.Component {
 
   handleSubmit = async () => {
     try {
-      const { hasReport, hasInfo, birthday, name, mobile, gender } = this.state;
-      if (hasReport) {
-        Router.push('/summary');
-      } else {
-        if (!hasInfo) {
-          // 提交前再次校验
-          if (mobile.replace(/\s/g, '').length < 11) {
-            Toast.info('请输入正确的手机号');
-            return;
-          }
-          const params = {
-            birthday: birthday.getTime(),
-            name,
-            gender,
-            mobile
-          };
-          const data = await agent.Baby.add(params);
+      const { needUpdate, hasReport, hasInfo, birthday, name, mobile, gender } = this.state;
+      if (!hasInfo) {
+        // 提交前再次校验
+        if (mobile.replace(/\s/g, '').length < 11) {
+          Toast.info('请输入正确的手机号');
+          return;
         }
+        const params = {
+          birthday: birthday.getTime(),
+          name,
+          gender,
+          mobile
+        };
+        const data = await agent.Baby.add(params);
         Router.push('/question');
+        return;
+      } else {
+        if (!needUpdate && hasReport) {
+          Router.push('/summary');
+          return;
+        } else {
+          Router.push('/question');
+          return;
+        }
       }
     } catch (e) {
     } finally {
@@ -154,6 +155,7 @@ class Page extends React.Component {
     const {
       hasReport,
       hasInfo,
+      needUpdate,
       birthday,
       gender,
       phoneError,
@@ -173,6 +175,11 @@ class Page extends React.Component {
         {extra}{' '}
       </div>
     );
+
+    let btnText = '开始测试';
+    if (!needUpdate && hasReport) {
+      btnText = '查看报告';
+    }
     return (
       <div className={styles.page}>
         <div>
@@ -283,7 +290,7 @@ class Page extends React.Component {
             </div>{' '}
             <div className={styles.submit} onClick={this.handleSubmit}>
               {' '}
-              {hasReport ? '查看报告' : '开始测试'}{' '}
+              {btnText}{' '}
             </div>{' '}
           </div>{' '}
         </div>{' '}

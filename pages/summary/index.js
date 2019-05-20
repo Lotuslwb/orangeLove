@@ -27,7 +27,6 @@ import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
 import { Radar, Doughnut } from 'react-chartjs';
-import { setCookie, getCookie } from '@utils/utils';
 
 const RadioItem = Radio.RadioItem;
 
@@ -66,7 +65,7 @@ class Page extends React.Component {
         attrData.push(attr.score);
         emptyLabels.push('');
       });
-      if (report.shareCount < 3) {
+      if (report.shareCount < 1) {
         labels = emptyLabels;
       }
       const radarData = {
@@ -108,23 +107,23 @@ class Page extends React.Component {
     }
   }
 
-  showModal = ({ attr, pro }) => {
+  showModal = () => {
     const { testVisiable } = this.state;
 
     this.setState({
       testVisiable: !testVisiable
     });
   };
-  handleModalTest = () => {
+  handleModalTest = async () => {
     const { attrId, pro, invitation } = this.state;
-    if (
-      Number(invitation) < 0 ||
-      Number(invitation) > 100 ||
-      invitation.length !== 3
-    ) {
-      Toast.info('您输入的邀请码有误');
-    } else {
-      setCookie('hasInvitation', '1');
+    // 需要调接口看邀请码是否通过
+    const result = await agent.Baby.unlock({
+      type: 'qcode',
+      value: invitation && invitation.trim().toUpperCase()
+    });
+    console.log(result);
+    debugger;
+    if (result) {
       if (pro) {
         Router.push('/profession');
       } else {
@@ -133,14 +132,13 @@ class Page extends React.Component {
     }
   };
 
-  handleTest = ({ attr, pro = false }) => {
+  handleTest = ({ attr, lock, pro = false }) => {
     console.log(attr);
-    // this.showModal({ attr, pro });
     this.setState({
       attrId: attr ? attr.attrId : 0,
       pro: !!pro
     });
-    if (getCookie('hasInvitation')) {
+    if (!lock) {
       if (pro) {
         Router.push('/profession');
       } else {
@@ -148,13 +146,8 @@ class Page extends React.Component {
       }
       return;
     } else {
-      this.showModal({ attr, pro });
+      this.showModal();
     }
-    // if (!getCookie("remind")) {
-    //     // 第一次提醒
-    //     this.visible = true;
-    //     setCookie("remind", "1");
-    //   }
   };
 
   handleOpenPoster = () => {
@@ -197,6 +190,19 @@ class Page extends React.Component {
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
+    const lock = !!!report.unlock;
+    const attrLen = attrList.length;
+    let summary = `宝贝的优势智能是 + ${attrList[0].attrName}，${
+      attrList[1].attrName
+    }，${attrList[2].attrName}；`;
+    if (lock) {
+      summary += `宝贝在**，**，**有所欠缺，需要进行引导`;
+    } else {
+      summary += `宝贝在${attrList[attrLen - 3].attrName}，${
+        attrList[attrLen - 2].attrName
+      }，${attrList[attrLen - 1].attrName}有所欠缺，需要进行引导`;
+    }
+
     // const chartData = {
     //     labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
     //     datasets: [
@@ -261,9 +267,7 @@ class Page extends React.Component {
             </div>
             <div className={styles.summary}>
               <div className={styles.summaryLabel}>智能总评</div>
-              <div className={styles.summaryContent}>
-                {report.summary || ''}
-              </div>
+              <div className={styles.summaryContent}>{summary}</div>
               <img
                 src="/static/img/btn_share.png"
                 onClick={() => {
@@ -284,7 +288,10 @@ class Page extends React.Component {
               {attrList[0] && (
                 <div
                   key={`attr-0`}
-                  onClick={this.handleTest.bind(this, { attr: attrList[0] })}
+                  onClick={this.handleTest.bind(this, {
+                    attr: attrList[0],
+                    lock
+                  })}
                   className={styles.cell}
                 >
                   <div
@@ -312,6 +319,9 @@ class Page extends React.Component {
                     <div>优化建议 ></div>
                     <img
                       className={styles.lock}
+                      style={
+                        lock ? { display: 'inherit' } : { display: 'none' }
+                      }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
                   </div>
@@ -321,7 +331,10 @@ class Page extends React.Component {
               {attrList[1] && (
                 <div
                   key={`attr-1`}
-                  onClick={this.handleTest.bind(this, { attr: attrList[1] })}
+                  onClick={this.handleTest.bind(this, {
+                    attr: attrList[1],
+                    lock
+                  })}
                   className={styles.cell}
                 >
                   <div
@@ -349,6 +362,9 @@ class Page extends React.Component {
                     <div>优化建议 ></div>
                     <img
                       className={styles.lock}
+                      style={
+                        lock ? { display: 'inherit' } : { display: 'none' }
+                      }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
                   </div>
@@ -359,7 +375,10 @@ class Page extends React.Component {
               {attrList[2] && (
                 <div
                   key={`attr-2`}
-                  onClick={this.handleTest.bind(this, { attr: attrList[2] })}
+                  onClick={this.handleTest.bind(this, {
+                    attr: attrList[2],
+                    lock
+                  })}
                   className={styles.cell}
                 >
                   <div
@@ -387,6 +406,9 @@ class Page extends React.Component {
                     <div>优化建议 ></div>
                     <img
                       className={styles.lock}
+                      style={
+                        lock ? { display: 'inherit' } : { display: 'none' }
+                      }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
                   </div>
@@ -396,7 +418,10 @@ class Page extends React.Component {
               {attrList[3] && (
                 <div
                   key={`attr-3`}
-                  onClick={this.handleTest.bind(this, { attr: attrList[3] })}
+                  onClick={this.handleTest.bind(this, {
+                    attr: attrList[3],
+                    lock
+                  })}
                   className={styles.cell}
                 >
                   <div className={styles.attr}>{attrList[3].attrName}</div>
@@ -418,6 +443,9 @@ class Page extends React.Component {
                     <div>优化建议 ></div>
                     <img
                       className={styles.lock}
+                      style={
+                        lock ? { display: 'inherit' } : { display: 'none' }
+                      }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
                   </div>
@@ -436,7 +464,7 @@ class Page extends React.Component {
             <img
               style={{ width: '100%' }}
               src={'/static/img/result_pro.png'}
-              onClick={this.handleTest.bind(this, { pro: true })}
+              onClick={this.handleTest.bind(this, { pro: true, lock })}
             />
           </div>
           {/*<img className={styles.page} src='/static/img/page/result_01.png'/>*/}

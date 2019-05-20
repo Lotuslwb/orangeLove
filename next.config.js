@@ -1,4 +1,4 @@
-const withCSS = require('@zeit/next-css');
+// const withCSS = require('@zeit/next-css');
 const withLess = require('@zeit/next-less');
 const path = require('path')
 const fs = require('fs')

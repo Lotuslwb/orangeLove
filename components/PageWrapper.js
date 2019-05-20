@@ -43,10 +43,13 @@ const PageWrapper = ComposedComponent => {
                   wx.onMenuShareAppMessage({
                     title: '橙爱天赋测评', // 分享标题
                     desc: '测测你的孩子有哪些独一无二的天赋', // 分享描述
-                    link: 'http://house.t.gegosport.com?fromId=' + data.userId, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    link: 'http://house.t.gegosport.com', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '', // 分享图标
-                    success: function() {
-                      // 设置成功
+                    success: async function() {
+                      console.log('分享成功')
+                      await agent.Baby.unlock({
+                        type: 'addShare'
+                      })
                     }
                   });
                 });

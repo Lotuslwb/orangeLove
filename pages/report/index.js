@@ -37,7 +37,7 @@ class Page extends React.Component {
         try {
             const data = await agent.Report.getByAttr(this.attrId);
             this.setState({
-                report: data
+                report: data || {}
             });
 
         } catch (e) {
@@ -53,7 +53,7 @@ class Page extends React.Component {
             report: {
                 attr = {}, result = [], raise = [], direction = [],
                 game1 = [], game2 = [], game3 = []
-            }
+            } = {}
         } = this.state;
         const games = [game1, game2];
         return (
