@@ -192,7 +192,7 @@ class Page extends React.Component {
     const attr = attrList[0].attrId;
     const lock = !!!report.unlock;
     const attrLen = attrList.length;
-    let summary = `宝贝的优势智能是 + ${attrList[0].attrName}，${
+    let summary = `宝贝的优势智能是${attrList[0].attrName}，${
       attrList[1].attrName
     }，${attrList[2].attrName}；`;
     if (lock) {
