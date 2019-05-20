@@ -26,7 +26,7 @@ import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
 import agent from '@utils/agent';
-import { getQueryVariable } from '@utils/utils';
+import { getQueryVariable, setCookie } from '@utils/utils';
 
 const RadioItem = Radio.RadioItem;
 
@@ -44,8 +44,9 @@ class Page extends React.Component {
   }
 
   async componentDidMount() {
-    const id = getQueryVariable('groupid');
-    await agent.System.getGroup(id || '1');
+    const id = getQueryVariable('groupid') || '1';
+    setCookie('groupid', id);
+    await agent.System.getGroup(id);
   }
 
   handleTest = async () => {

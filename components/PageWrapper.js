@@ -1,15 +1,10 @@
-import React, {
-  Component
-} from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Head from 'next/head';
 import agent from '@utils/agent';
 import Router from 'next/router';
 import storage from '@utils/storage';
-import {
-  isWeixinBrowser,
-  getQueryVariable
-} from '@utils/utils';
+import { isWeixinBrowser, getCookie } from '@utils/utils';
 
 const PageWrapper = ComposedComponent => {
   class AppLayout extends Component {
@@ -17,25 +12,20 @@ const PageWrapper = ComposedComponent => {
       super(props);
     }
 
-    static async getInitialProps({
-      res,
-      query
-    }) {
+    static async getInitialProps({ res, query }) {
       return {
         query
       };
     }
 
     componentDidMount() {
-      const {
-        query
-      } = this.props;
+      const { query } = this.props;
       const user = storage.UserInfo.get();
       const isWeixin = isWeixinBrowser();
       this.setState({
         isWeixin
       });
-      const groupid = getQueryVariable('groupid') || '1';
+      const groupid = getCookie('groupid') || '1';
       if (!user) {
         if (isWeixin) {
           if (!query.code) {
@@ -49,7 +39,7 @@ const PageWrapper = ComposedComponent => {
               agent.Wechat.getConfig().then(config => {
                 config.jsApiList = ['onMenuShareAppMessage'];
                 wx.config(config);
-                wx.ready(function () {
+                wx.ready(function() {
                   //需在用户可能点击分享按钮前就先调用
                   wx.onMenuShareAppMessage({
                     title: '橙爱天赋测评', // 分享标题
@@ -63,10 +53,10 @@ const PageWrapper = ComposedComponent => {
                     //   })
                     // }
                     success: async function() {
-                      console.log('分享成功')
+                      console.log('分享成功');
                       await agent.Baby.unlock({
                         type: 'addShare'
-                      })
+                      });
                       window.location.reload();
                     }
                   });
@@ -79,12 +69,12 @@ const PageWrapper = ComposedComponent => {
         agent.Wechat.getConfig().then(config => {
           config.jsApiList = ['onMenuShareAppMessage'];
           wx.config(config);
-          wx.ready(function () {
+          wx.ready(function() {
             //需在用户可能点击分享按钮前就先调用
             wx.onMenuShareAppMessage({
               title: '橙爱天赋测评', // 分享标题
               desc: '测测你的孩子有哪些独一无二的天赋', // 分享描述
-              link: 'http://house.t.gegosport.com', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+              link: 'http://house.t.gegosport.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
               imgUrl: '', // 分享图标
               // success: function () {
               //   console.log('分享成功')
@@ -93,10 +83,10 @@ const PageWrapper = ComposedComponent => {
               //   })
               // }
               success: async function() {
-                console.log('分享成功')
+                console.log('分享成功');
                 await agent.Baby.unlock({
                   type: 'addShare'
-                })
+                });
                 window.location.reload();
               }
             });
@@ -121,31 +111,26 @@ const PageWrapper = ComposedComponent => {
     }
 
     render() {
-      return ( <
-        div > {
-          /* <Head>
+      return (
+        <div>
+          {' '}
+          {/* <Head>
                                   <script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
-                              </Head> */
-        } <
-        Head >
-        <
-        meta name = "viewport"
-        content = "width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" /
-        >
-        <
-        link rel = "stylesheet"
-        type = "text/css"
-        href = "//unpkg.com/antd-mobile/dist/antd-mobile.min.css" /
-        >
-        <
-        script src = "http://res.wx.qq.com/open/js/jweixin-1.3.2.js" / >
-        <
-        /Head> <
-        ComposedComponent {
-          ...this.props
-        }
-        /> < /
-        div >
+                              </Head> */}{' '}
+          <Head>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+            />
+            <link
+              rel="stylesheet"
+              type="text/css"
+              href="//unpkg.com/antd-mobile/dist/antd-mobile.min.css"
+            />
+            <script src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js" />
+          </Head>{' '}
+          <ComposedComponent {...this.props} />{' '}
+        </div>
       );
     }
   }
