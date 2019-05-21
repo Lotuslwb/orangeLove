@@ -470,32 +470,27 @@ class Page extends React.Component {
           {/*<img className={styles.page} src='/static/img/page/result_01.png'/>*/}
           {/*<img onClick={this.handleTest} className={styles.page} src='/static/img/page/result_02.png'/>*/}
           {/*<img className={styles.page} src='/static/img/page/result_03.png'/>*/}
-          {this.state.shareVisible && (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, .7)'
-              }}
-              onClick={() => {
-                this.setState({ shareVisible: false });
-              }}
-            >
-              <img
-                style={{
-                  width: '320px',
-                  height: '320px',
-                  position: 'fixed',
-                  top: 0,
-                  right: 0
-                }}
-                src={'/static/img/sharemask.png'}
-              />
-            </div>
-          )}
+        </div>
+        <div
+          className={styles.mask}
+          style={
+            this.state.shareVisible ? { display: 'block' } : { display: 'none' }
+          }
+          onClick={() => {
+            this.setState({ shareVisible: false });
+          }}
+        >
+          <img
+            style={{
+              width: '320px',
+              height: '320px',
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              zIndex: 20
+            }}
+            src={'/static/img/sharemask.png'}
+          />
         </div>
 
         {/* <Modal
