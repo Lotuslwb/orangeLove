@@ -50,7 +50,8 @@ class Page extends React.Component {
       bak: false,
       attrId: 0,
       pro: false,
-      invitation: ''
+      invitation: '',
+      showDrawback: false,
     };
   }
 
@@ -100,7 +101,8 @@ class Page extends React.Component {
       this.setState({
         report,
         radarData,
-        doughnutData
+        doughnutData,
+        showDrawback: report.shareCount > 0
       });
     } catch (e) {
     } finally {
@@ -186,7 +188,7 @@ class Page extends React.Component {
   };
 
   render() {
-    const { report = {}, doughnutData, radarData } = this.state;
+    const { report = {}, doughnutData, radarData, showDrawback } = this.state;
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
@@ -195,7 +197,7 @@ class Page extends React.Component {
     let summary = `宝贝的优势智能是${attrList[0].attrName}，${
       attrList[1].attrName
     }，${attrList[2].attrName}；`;
-    if (lock) {
+    if (!showDrawback) {
       summary += `宝贝在**，**，**有所欠缺，需要进行引导`;
     } else {
       summary += `宝贝在${attrList[attrLen - 3].attrName}，${
