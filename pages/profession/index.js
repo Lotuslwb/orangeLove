@@ -27,7 +27,7 @@ import styles from './index.less';
 import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
-import { Radar, Doughnut } from 'react-chartjs';
+import { Radar } from 'react-chartjs';
 
 const RadioItem = Radio.RadioItem;
 

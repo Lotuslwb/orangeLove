@@ -26,9 +26,10 @@ import styles from './index.less';
 import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
-import { Radar } from 'react-chartjs';
+// import { Radar } from 'react-chartjs';
 
 const RadioItem = Radio.RadioItem;
+const F2 = require('@antv/f2');
 
 @observer
 class Page extends React.Component {
@@ -56,25 +57,72 @@ class Page extends React.Component {
         labels.push(attr.attrName);
         attrData.push(attr.score);
       });
-      const seriesData = {
-        labels,
-        datasets: [
-          {
-            label: 'My Second dataset',
-            fillColor: 'rgba(234,135,68,0.2)',
-            strokeColor: 'rgba(234,135,68,.8)',
-            pointColor: 'rgba(234,135,68,1)',
-            pointStrokeColor: '#fff',
-            pointHighlightFill: '#fff',
-            pointHighlightStroke: 'rgba(151,187,205,1)',
-            data: attrData
-          }
-        ]
-      };
+      //   const seriesData = {
+      //     labels,
+      //     datasets: [
+      //       {
+      //         label: 'test',
+      //         // fill: true,
+      //         // backgroundColor: 'rgba(255, 99, 132, 0.2)',
+      //         // borderColor: 'rgb(255, 99, 132)',
+      //         // pointBackgroundColor: 'rgb(255, 99, 132)',
+      //         // pointBorderColor: '#fff',
+      //         // pointHoverBackgroundColor: '#fff',
+      //         // pointHoverBorderColor: 'rgb(255, 99, 132)',
+      //         fillColor: 'rgba(234,135,68,0.2)',
+      //         strokeColor: 'rgba(234,135,68,.8)',
+      //         pointColor: 'rgba(234,135,68,1)',
+      //         pointStrokeColor: '#fff',
+      //         pointHighlightFill: '#fff',
+      //         pointHighlightStroke: 'rgba(151,187,205,1)',
+      //         data: attrData
+      //       }
+      //     ]
+      //   };
+      const seriesData = data.radarData;
+      const chart = new F2.Chart({
+        id: 'myChart',
+        pixelRatio: window.devicePixelRatio // 指定分辨率
+      });
+      chart.coord('polar');
+      chart.source(seriesData, {
+        score: {
+          min: 0,
+          max: 100,
+        //   nice: false,
+        //   tickCount: 2
+        }
+      });
+    //   chart.axis('score', {
+    //     // label: function label(text, index, total) {
+    //     //   if (index === total - 1) {
+    //     //     return null;
+    //     //   }
+    //     //   return {
+    //     //     top: true
+    //     //   };
+    //     // },
+    //     grid: {
+    //       lineDash: null
+    //     }
+    //   });
+    //   chart.axis('attrName', {
+    //     grid: {
+    //       lineDash: null
+    //     }
+    //   });
+      chart
+        .line()
+        .position('attrName*score')
+        // .color('rgba(234,135,68,0.2)')
+        // .style({
+        //   fill: 'rgba(234,135,68,0.2)'
+        // });
       this.setState({
         report: data || {},
         seriesData
       });
+      chart.render();
     } catch (e) {
       alert('该年龄段暂不支持报告分析');
     } finally {
@@ -95,6 +143,11 @@ class Page extends React.Component {
       } = {}
     } = this.state;
     const games = [game1, game2];
+    // const testData = {
+    //     labels: ["Eating","Drinking","Sleeping","Designing","Coding","Cycling","Running"],
+    //     datasets: [{"label":"My First Dataset","data":[65,59,90,81,56,55,40],"fill":true,"backgroundColor":"rgba(255, 99, 132, 0.2)","borderColor":"rgb(255, 99, 132)","pointBackgroundColor":"rgb(255, 99, 132)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},{"label":"My Second Dataset","data":[28,48,40,19,96,27,100],"fill":true,"backgroundColor":"rgba(54, 162, 235, 0.2)","borderColor":"rgb(54, 162, 235)","pointBackgroundColor":"rgb(54, 162, 235)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(54, 162, 235)"}]
+    // }
+    // const testOptions = {"elements":{"line":{"tension":0,"borderWidth":3}}}
     return (
       <div className={styles.page}>
         <div className={styles.sectionHead}>
@@ -105,27 +158,15 @@ class Page extends React.Component {
           <div className={styles.card}>
             <div className={styles.title}>智能分析</div>
             <div className={styles.radarWrapper}>
-              {seriesData && (
+              <canvas id="myChart" width="300" height="300" />
+              {/* {seriesData && (
                 <Radar
-                  data={seriesData}
+                  data={testData}
                   width={300}
                   height={300}
-                  options={{
-                    legend: {
-                      display: false
-                    },
-                    scale: {
-                      display: true,
-                      ticks: {
-                        display: true,
-                        beginAtZero: true,
-                        maxTicksLimit: 100,
-                        stepSize: 20
-                      }
-                    }
-                  }}
+                  options={testOptions}
                 />
-              )}
+              )} */}
             </div>
           </div>
           <div className={styles.card}>
