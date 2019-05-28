@@ -539,13 +539,61 @@ class Page extends React.Component {
   };
 
   renderPersonal = () => {
-    return (
-      <>
-        <img className={styles['pro-img']} src="/static/img/pro/pro-4.png" />
-        <img className={styles['pro-img']} src="/static/img/pro/pro-5.png" />
-        <img className={styles['pro-img']} src="/static/img/pro/pro-6.png" />
-      </>
-    );
+    const { reports } = this.state;
+    return reports.map((attr, index) => {
+      let labels = [];
+      const attrData = [];
+      (attr.radarData || []).forEach(attr => {
+        labels.push(attr.attrName);
+        attrData.push(attr.score);
+      });
+      const seriesData = {
+        labels,
+        datasets: [
+          {
+            label: 'My Second dataset',
+            fillColor: 'rgba(234,135,68,0.2)',
+            strokeColor: 'rgba(234,135,68,.8)',
+            pointColor: 'rgba(234,135,68,1)',
+            pointStrokeColor: '#fff',
+            pointHighlightFill: '#fff',
+            pointHighlightStroke: 'rgba(151,187,205,1)',
+            data: attrData
+          }
+        ]
+      };
+      return (
+        <>
+          <img
+            className={styles['pro-img']}
+            src={`/static/img/pro/attr-${index + 1}.png`}
+          />
+          <div className={styles.radarWrapper}>
+            {seriesData && (
+              <Radar
+                data={seriesData}
+                width={300}
+                height={300}
+                options={{
+                  legend: {
+                    display: false
+                  },
+                  scale: {
+                    display: true,
+                    ticks: {
+                      display: true,
+                      beginAtZero: true,
+                      maxTicksLimit: 100,
+                      stepSize: 20
+                    }
+                  }
+                }}
+              />
+            )}
+          </div>
+        </>
+      );
+    });
   };
 
   renderSuggestions = () => {
@@ -554,7 +602,15 @@ class Page extends React.Component {
     const disadvantages = reports.slice(5);
     const getAttrs = attrs => {
       return attrs.map(report => {
-        const { attr = {}, result = [], raise = [], direction = [], game1 = [], game2 = [], game3 = [] } = report;
+        const {
+          attr = {},
+          result = [],
+          raise = [],
+          direction = [],
+          game1 = [],
+          game2 = [],
+          game3 = []
+        } = report;
         const games = [game1, game2, game3];
         return (
           <div className={styles.innerpage}>
@@ -591,10 +647,12 @@ class Page extends React.Component {
                 <div className={styles.title}>教育游戏</div>
                 <div className={styles.content}>
                   {games.map(item => {
-                    return (<div>
-                      <div className={styles.bold}>{item[0]}</div>
-                      <div>{item[1]}</div>
-                    </div>);
+                    return (
+                      <div>
+                        <div className={styles.bold}>{item[0]}</div>
+                        <div>{item[1]}</div>
+                      </div>
+                    );
                   })}
                 </div>
               </div>

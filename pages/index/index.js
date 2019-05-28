@@ -40,13 +40,20 @@ class Page extends React.Component {
       this.voteId = query.voteId;
     }
 
-    this.state = { loading: false };
+    this.state = { loading: false, cover: '' };
   }
 
   async componentDidMount() {
     const id = getQueryVariable('groupid') || '1';
     setCookie('groupid', id);
-    await agent.System.getGroup(id);
+    const data = await agent.System.getGroup(id);
+    this.setState({
+      cover: data.coverpicPath,
+      host: window.location.protocol + '//' + window.location.host,
+    })
+    // setCookie('cover', data.coverpicPath);
+    setCookie('adpath', data.adpicPath);
+    setCookie('adurl', data.adurl);
   }
 
   handleTest = async () => {
@@ -67,7 +74,7 @@ class Page extends React.Component {
   };
 
   render() {
-    const { loading } = this.state;
+    const { loading, cover, host } = this.state;
     return (
       <>
         {/*<Button type="primary" onClick={this.handleTest}>点击测试</Button>*/}
@@ -75,7 +82,7 @@ class Page extends React.Component {
         <img
           onClick={this.handleTest}
           className={styles.page}
-          src="/static/img/page/page1.jpg"
+          src={`${host}:8360${cover}`}
         />
       </>
     );

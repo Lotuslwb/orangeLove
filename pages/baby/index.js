@@ -50,7 +50,8 @@ class Page extends React.Component {
       gender: 1,
       hasReport: false,
       needUpdate: false,
-      hasInfo: false
+      hasInfo: false,
+      nextlabel: '',
     };
   }
 
@@ -66,6 +67,7 @@ class Page extends React.Component {
           mobile: data.mobile,
           hasReport: !!data.hasReport,
           needUpdate: data.needUpdate,
+          nextlabel: data.nextlabel,
         });
       }
     } catch (e) {
@@ -159,7 +161,8 @@ class Page extends React.Component {
       birthday,
       gender,
       phoneError,
-      mobile
+      mobile,
+      nextlabel
     } = this.state;
     const CustomChildren = ({ extra, onClick, children }) => (
       <div
@@ -296,7 +299,7 @@ class Page extends React.Component {
         </div>{' '}
         <div className={styles.tips}>
           <div>* 每个年龄段仅可测试一次</div>
-          <div>您的宝宝下个可测年龄段为7-9个月</div>
+          <div>您的宝宝下个可测年龄段为{nextlabel}</div>
         </div>
       </div>
     );
