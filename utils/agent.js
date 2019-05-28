@@ -160,6 +160,9 @@ const Answer = {
 const Report = {
   getByAttr: attrId => {
     return requests.get(`${host}/attr_report?attr=${attrId}`);
+  },
+  getPayParams: () => {
+    return requests.post(`${host}/payment`);
   }
 };
 

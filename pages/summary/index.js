@@ -56,7 +56,7 @@ class Page extends React.Component {
       shareCount: 0,
       firstId: 0,
       random: 0,
-      host: '',
+      host: ''
     };
   }
 
@@ -117,12 +117,37 @@ class Page extends React.Component {
         doughnutData,
         shareCount: report.shareCount,
         shared: report.shareCount > 0,
-        host: window.location.protocol + '//' + window.location.host,
+        host: window.location.protocol + '//' + window.location.host
+      });
+      const payParams = await agent.Report.getPayParams();
+      this.setState({
+        payParams
       });
     } catch (e) {
     } finally {
     }
   }
+
+  payConfig = config => {
+    function onBridgeReady() {
+      WeixinJSBridge.invoke('getBrandWCPayRequest', config, function(res) {
+        if (res.err_msg == 'get_brand_wcpay_request:ok') {
+          // 使用以上方式判断前端返回,微信团队郑重提示：
+          //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+        }
+      });
+    }
+    if (typeof WeixinJSBridge == 'undefined') {
+      if (document.addEventListener) {
+        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+      } else if (document.attachEvent) {
+        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+      }
+    } else {
+      onBridgeReady();
+    }
+  };
 
   showModal = () => {
     const { testVisiable } = this.state;
@@ -141,6 +166,10 @@ class Page extends React.Component {
     if (result) {
       Router.push('/profession');
     }
+  };
+  handlePay = () => {
+    const { jsconfig } = this.state.payParams;
+    this.payConfig(jsconfig);
   };
 
   handleTest = ({ lock }) => {
@@ -227,7 +256,7 @@ class Page extends React.Component {
       shared,
       firstId,
       random,
-      host,
+      host
     } = this.state;
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
@@ -725,13 +754,13 @@ class Page extends React.Component {
               onChange={v => this.setState({ invitation: v })}
             />
             <div className={styles.inline}>
-              <Button
+              {/* <Button
                 onClick={() => {
                   this.setState({ testVisiable: false });
                 }}
               >
                 取消
-              </Button>
+              </Button> */}
               <Button
                 type="primary"
                 style={{ background: '#fca34a' }}
@@ -739,7 +768,13 @@ class Page extends React.Component {
               >
                 确定
               </Button>
-              {/* <Button onClick={this.handleModalTest} type="primary" style={{background: '#fca34a'}}>支付</Button> */}
+              <Button
+                onClick={this.handlePay}
+                type="primary"
+                style={{ background: '#fca34a' }}
+              >
+                支付
+              </Button>
             </div>
           </div>
         </Modal>

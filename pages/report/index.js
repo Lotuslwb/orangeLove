@@ -114,6 +114,10 @@ class Page extends React.Component {
       }
     });
     chart.tooltip(false);
+    // chart.tooltip({
+    //     showTitle: true,
+    //     showItemMarker: false,
+    // });
     chart
       .line()
       .position('attrName*score')
