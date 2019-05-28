@@ -113,6 +113,7 @@ class Page extends React.Component {
         lineDash: null
       }
     });
+    chart.tooltip(false);
     chart
       .line()
       .position('attrName*score')

@@ -75,6 +75,7 @@ class Page extends React.Component {
 
   render() {
     const { loading, cover, host } = this.state;
+
     return (
       <>
         {/*<Button type="primary" onClick={this.handleTest}>点击测试</Button>*/}
@@ -82,7 +83,7 @@ class Page extends React.Component {
         <img
           onClick={this.handleTest}
           className={styles.page}
-          src={`${host}:8360${cover}`}
+          src={host ? `${host}:8360${cover}` : '/static/img/page/page1.jpg'}
         />
       </>
     );
