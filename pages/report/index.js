@@ -51,12 +51,12 @@ class Page extends React.Component {
   async componentDidMount() {
     try {
       const data = await agent.Report.getByAttr(this.attrId);
-      let labels = [];
-      const attrData = [];
-      (data.radarData || []).forEach(attr => {
-        labels.push(attr.attrName);
-        attrData.push(attr.score);
-      });
+      //   let labels = [];
+      //   const attrData = [];
+      //   (data.radarData || []).forEach(attr => {
+      //     labels.push(attr.attrName);
+      //     attrData.push(attr.score);
+      //   });
       //   const seriesData = {
       //     labels,
       //     datasets: [
@@ -79,55 +79,57 @@ class Page extends React.Component {
       //       }
       //     ]
       //   };
-      const seriesData = data.radarData;
-      const chart = new F2.Chart({
-        id: 'myChart',
-        pixelRatio: window.devicePixelRatio // 指定分辨率
-      });
-      chart.coord('polar');
-      chart.source(seriesData, {
-        score: {
-          min: 0,
-          max: 100,
-        //   nice: false,
-        //   tickCount: 2
-        }
-      });
-    //   chart.axis('score', {
-    //     // label: function label(text, index, total) {
-    //     //   if (index === total - 1) {
-    //     //     return null;
-    //     //   }
-    //     //   return {
-    //     //     top: true
-    //     //   };
-    //     // },
-    //     grid: {
-    //       lineDash: null
-    //     }
-    //   });
-    //   chart.axis('attrName', {
-    //     grid: {
-    //       lineDash: null
-    //     }
-    //   });
-      chart
-        .line()
-        .position('attrName*score')
-        // .color('rgba(234,135,68,0.2)')
-        // .style({
-        //   fill: 'rgba(234,135,68,0.2)'
-        // });
       this.setState({
         report: data || {},
-        seriesData
       });
-      chart.render();
+      this.renderRadar({data: data.radarData, id: 'myChart'})
     } catch (e) {
       alert('该年龄段暂不支持报告分析');
     } finally {
     }
   }
+
+  renderRadar = ({ data, id }) => {
+    const chart = new F2.Chart({
+      id,
+      pixelRatio: window.devicePixelRatio // 指定分辨率
+    });
+    chart.coord('polar');
+    chart.source(data, {
+      score: {
+        min: 0,
+        max: 100
+        //   nice: false,
+        //   tickCount: 2
+      }
+    });
+    chart.axis('score', {
+      grid: {
+        lineDash: null
+      }
+    });
+    chart.axis('attrName', {
+      grid: {
+        lineDash: null
+      }
+    });
+    chart
+      .line()
+      .position('attrName*score')
+      .color('rgba(234,135,68,0.2)')
+      .style({
+        fill: 'rgba(234,135,68,0.2)'
+      });
+    chart
+      .point()
+      .position('attrName*score')
+      .color('rgba(234,135,68,1)')
+      .style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    chart.render();
+  };
 
   render() {
     const {

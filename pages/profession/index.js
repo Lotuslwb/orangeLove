@@ -30,7 +30,7 @@ import Router from 'next/router';
 import { Radar } from 'react-chartjs';
 
 const RadioItem = Radio.RadioItem;
-
+const F2 = require('@antv/f2');
 @observer
 class Page extends React.Component {
   constructor(props) {
@@ -100,11 +100,56 @@ class Page extends React.Component {
         doughnutData,
         reports: attrs
       });
+      attrs.map((attr, index) => {
+        this.renderRadar({data: attr.radarData, id: `myChart-${index+1}`})
+      })
     } catch (e) {
       alert('该年龄段暂不支持报告分析');
     } finally {
     }
   }
+
+  renderRadar = ({ data, id }) => {
+    const chart = new F2.Chart({
+      id,
+      pixelRatio: window.devicePixelRatio // 指定分辨率
+    });
+    chart.coord('polar');
+    chart.source(data, {
+      score: {
+        min: 0,
+        max: 100
+        //   nice: false,
+        //   tickCount: 2
+      }
+    });
+    chart.axis('score', {
+      grid: {
+        lineDash: null
+      }
+    });
+    chart.axis('attrName', {
+      grid: {
+        lineDash: null
+      }
+    });
+    chart
+      .line()
+      .position('attrName*score')
+      .color('rgba(234,135,68,0.2)')
+      .style({
+        fill: 'rgba(234,135,68,0.2)'
+      });
+    chart
+      .point()
+      .position('attrName*score')
+      .color('rgba(234,135,68,1)')
+      .style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    chart.render();
+  };
 
   renderReport = () => {
     const { reports } = this.state;
@@ -569,7 +614,8 @@ class Page extends React.Component {
             src={`/static/img/pro/attr-${index + 1}.png`}
           />
           <div className={styles.radarWrapper}>
-            {seriesData && (
+            <canvas id={`myChart-${index + 1}`} width="300" height="300" />
+            {/* {seriesData && (
               <Radar
                 data={seriesData}
                 width={300}
@@ -589,7 +635,7 @@ class Page extends React.Component {
                   }
                 }}
               />
-            )}
+            )} */}
           </div>
         </>
       );
