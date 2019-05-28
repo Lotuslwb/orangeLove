@@ -64,6 +64,10 @@ class Page extends React.Component {
                 </div>
                 <div className={styles.cardList}>
                     <div className={styles.card}>
+                        <div className={styles.title}>智能分析</div>
+                        等接口
+                    </div>
+                    <div className={styles.card}>
                         <div className={styles.title}>结果分析</div>
                         <div className={styles.content}>
                             {result.map(item => {

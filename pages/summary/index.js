@@ -51,7 +51,8 @@ class Page extends React.Component {
       attrId: 0,
       pro: false,
       invitation: '',
-      showDrawback: false,
+      shared: false,
+      shareCount: 0,
     };
   }
 
@@ -66,9 +67,10 @@ class Page extends React.Component {
         attrData.push(attr.score);
         emptyLabels.push('');
       });
-      if (report.shareCount < 1) {
-        labels = emptyLabels;
-      }
+      // 新改动，无需隐藏雷达图标签
+      // if (report.shareCount < 1) {
+      //   labels = emptyLabels;
+      // }
       const radarData = {
         labels,
         datasets: [
@@ -102,7 +104,8 @@ class Page extends React.Component {
         report,
         radarData,
         doughnutData,
-        showDrawback: report.shareCount > 0
+        shareCount: report.shareCount,
+        shared: report.shareCount > 0
       });
     } catch (e) {
     } finally {
@@ -111,46 +114,49 @@ class Page extends React.Component {
 
   showModal = () => {
     const { testVisiable } = this.state;
-
     this.setState({
       testVisiable: !testVisiable
     });
   };
   handleModalTest = async () => {
-    const { attrId, pro, invitation } = this.state;
+    const { invitation } = this.state;
     // 需要调接口看邀请码是否通过
     const result = await agent.Baby.unlock({
       type: 'qcode',
       value: invitation && invitation.trim().toUpperCase()
     });
     console.log(result);
-    debugger;
     if (result) {
-      if (pro) {
-        Router.push('/profession');
-      } else {
-        Router.push(`/report?attrId=${attrId}`);
-      }
+      Router.push('/profession');
     }
   };
 
-  handleTest = ({ attr, lock, pro = false }) => {
-    console.log(attr);
-    this.setState({
-      attrId: attr ? attr.attrId : 0,
-      pro: !!pro
-    });
+  handleTest = ({ lock }) => {
+    // this.setState({
+    //   attrId: attr ? attr.attrId : 0,
+    //   pro: !!pro
+    // });
+    // 新需求，attr通过分享判断，pro通过lock判断
     if (!lock) {
-      if (pro) {
-        Router.push('/profession');
-      } else {
-        Router.push(`/report?attrId=${attr.attrId}`);
-      }
+      Router.push('/profession');
+      // if (pro) {
+      //   Router.push('/profession');
+      // } else {
+      //   Router.push(`/report?attrId=${attr.attrId}`);
+      // }
       return;
     } else {
       this.showModal();
     }
   };
+
+  gotoAttr = ({attr, shareCount = 0}) => {
+    if (shareCount > 0) {
+      Router.push(`/report?attrId=${attr.attrId}`);
+    } else {
+      Toast.info('分享给好友解锁优化建议')
+    }
+  }
 
   handleOpenPoster = () => {
     this.setState({ posterVisible: true });
@@ -188,22 +194,22 @@ class Page extends React.Component {
   };
 
   render() {
-    const { report = {}, doughnutData, radarData, showDrawback } = this.state;
+    const { report = {}, doughnutData, radarData, shareCount, shared } = this.state;
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
     const lock = !!!report.unlock;
-    const attrLen = attrList.length;
-    let summary = `宝贝的优势智能是${attrList[0].attrName}，${
-      attrList[1].attrName
-    }，${attrList[2].attrName}；`;
-    if (!showDrawback) {
-      summary += `宝贝在**，**，**有所欠缺，需要进行引导`;
-    } else {
-      summary += `宝贝在${attrList[attrLen - 3].attrName}，${
-        attrList[attrLen - 2].attrName
-      }，${attrList[attrLen - 1].attrName}有所欠缺，需要进行引导`;
-    }
+    // const attrLen = attrList.length;
+    // let summary = `宝贝的优势智能是${attrList[0].attrName}，${
+    //   attrList[1].attrName
+    // }，${attrList[2].attrName}；`;
+    // if (!shared) {
+    //   summary += `宝贝在**，**，**有所欠缺，需要进行引导`;
+    // } else {
+    //   summary += `宝贝在${attrList[attrLen - 3].attrName}，${
+    //     attrList[attrLen - 2].attrName
+    //   }，${attrList[attrLen - 1].attrName}有所欠缺，需要进行引导`;
+    // }
 
     // const chartData = {
     //     labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
@@ -268,8 +274,8 @@ class Page extends React.Component {
               )}
             </div>
             <div className={styles.summary}>
-              <div className={styles.summaryLabel}>智能总评</div>
-              <div className={styles.summaryContent}>{summary}</div>
+              <div className={styles.summaryLabel}>八大智能雷达图</div>
+              {/* <div className={styles.summaryContent}>{summary}</div> */}
               <img
                 src="/static/img/btn_share.png"
                 onClick={() => {
@@ -290,9 +296,9 @@ class Page extends React.Component {
               {attrList[0] && (
                 <div
                   key={`attr-0`}
-                  onClick={this.handleTest.bind(this, {
+                  onClick={this.gotoAttr.bind(this, {
                     attr: attrList[0],
-                    lock
+                    shareCount
                   })}
                   className={styles.cell}
                 >
@@ -322,7 +328,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        lock ? { display: 'inherit' } : { display: 'none' }
+                        !shared ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -333,9 +339,9 @@ class Page extends React.Component {
               {attrList[1] && (
                 <div
                   key={`attr-1`}
-                  onClick={this.handleTest.bind(this, {
+                  onClick={this.gotoAttr.bind(this, {
                     attr: attrList[1],
-                    lock
+                    shareCount
                   })}
                   className={styles.cell}
                 >
@@ -365,7 +371,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        lock ? { display: 'inherit' } : { display: 'none' }
+                        !shared ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -377,9 +383,9 @@ class Page extends React.Component {
               {attrList[2] && (
                 <div
                   key={`attr-2`}
-                  onClick={this.handleTest.bind(this, {
+                  onClick={this.gotoAttr.bind(this, {
                     attr: attrList[2],
-                    lock
+                    shareCount
                   })}
                   className={styles.cell}
                 >
@@ -409,7 +415,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        lock ? { display: 'inherit' } : { display: 'none' }
+                        !shared ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -420,9 +426,9 @@ class Page extends React.Component {
               {attrList[3] && (
                 <div
                   key={`attr-3`}
-                  onClick={this.handleTest.bind(this, {
+                  onClick={this.gotoAttr.bind(this, {
                     attr: attrList[3],
-                    lock
+                    shareCount
                   })}
                   className={styles.cell}
                 >
@@ -446,7 +452,157 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        lock ? { display: 'inherit' } : { display: 'none' }
+                        !shared ? { display: 'inherit' } : { display: 'none' }
+                      }
+                      src={'/static/img/icon/icon_lock01.png'}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={styles.row}>
+              {attrList[4] && (
+                <div
+                  key={`attr-4`}
+                  onClick={this.gotoAttr.bind(this, {
+                    attr: attrList[4],
+                    shareCount
+                  })}
+                  className={styles.cell}
+                >
+                  <div className={styles.attr}>{attrList[4].attrName}</div>
+                  <div
+                    className={styles.bg}
+                    style={{
+                      backgroundImage:
+                        'url("/static/img/icon/icon_' +
+                        attrList[4].attrId +
+                        '.png")'
+                    }}
+                  />
+                  <div
+                    className={styles.bottom}
+                    style={{
+                      background: '#fd8f37'
+                    }}
+                  >
+                    <div>优化建议 ></div>
+                    <img
+                      className={styles.lock}
+                      style={
+                        !shared ? { display: 'inherit' } : { display: 'none' }
+                      }
+                      src={'/static/img/icon/icon_lock01.png'}
+                    />
+                  </div>
+                </div>
+              )}
+              <div style={{ width: '20px' }} />
+              {attrList[5] && (
+                <div
+                  key={`attr-5`}
+                  onClick={this.gotoAttr.bind(this, {
+                    attr: attrList[5],
+                    shareCount
+                  })}
+                  className={styles.cell}
+                >
+                  <div className={styles.attr}>{attrList[5].attrName}</div>
+                  <div
+                    className={styles.bg}
+                    style={{
+                      backgroundImage:
+                        'url("/static/img/icon/icon_' +
+                        attrList[5].attrId +
+                        '.png")'
+                    }}
+                  />
+                  <div
+                    className={styles.bottom}
+                    style={{
+                      background: '#fd7d8f'
+                    }}
+                  >
+                    <div>优化建议 ></div>
+                    <img
+                      className={styles.lock}
+                      style={
+                        !shared ? { display: 'inherit' } : { display: 'none' }
+                      }
+                      src={'/static/img/icon/icon_lock01.png'}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={styles.row}>
+              {attrList[6] && (
+                <div
+                  key={`attr-6`}
+                  onClick={this.gotoAttr.bind(this, {
+                    attr: attrList[6],
+                    shareCount
+                  })}
+                  className={styles.cell}
+                >
+                  <div className={styles.attr}>{attrList[6].attrName}</div>
+                  <div
+                    className={styles.bg}
+                    style={{
+                      backgroundImage:
+                        'url("/static/img/icon/icon_' +
+                        attrList[6].attrId +
+                        '.png")'
+                    }}
+                  />
+                  <div
+                    className={styles.bottom}
+                    style={{
+                      background: '#afe568'
+                    }}
+                  >
+                    <div>优化建议 ></div>
+                    <img
+                      className={styles.lock}
+                      style={
+                        !shared ? { display: 'inherit' } : { display: 'none' }
+                      }
+                      src={'/static/img/icon/icon_lock01.png'}
+                    />
+                  </div>
+                </div>
+              )}
+              <div style={{ width: '20px' }} />
+              {attrList[7] && (
+                <div
+                  key={`attr-7`}
+                  onClick={this.gotoAttr.bind(this, {
+                    attr: attrList[7],
+                    shareCount
+                  })}
+                  className={styles.cell}
+                >
+                  <div className={styles.attr}>{attrList[7].attrName}</div>
+                  <div
+                    className={styles.bg}
+                    style={{
+                      backgroundImage:
+                        'url("/static/img/icon/icon_' +
+                        attrList[7].attrId +
+                        '.png")'
+                    }}
+                  />
+                  <div
+                    className={styles.bottom}
+                    style={{
+                      background: '#5fd8ef'
+                    }}
+                  >
+                    <div>优化建议 ></div>
+                    <img
+                      className={styles.lock}
+                      style={
+                        !shared ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -457,16 +613,16 @@ class Page extends React.Component {
           </div>
           <div className={styles.sectionBottom}>
             <img
-              style={{ width: '100%' }}
+              className={styles['bottom-img']}
               src={'/static/img/result_work.png'}
               onClick={() => {
                 this.setState({ bak: true });
               }}
             />
             <img
-              style={{ width: '100%' }}
+              className={styles['bottom-img']}
               src={'/static/img/result_pro.png'}
-              onClick={this.handleTest.bind(this, { pro: true, lock })}
+              onClick={this.handleTest.bind(this, { lock })}
             />
           </div>
           {/*<img className={styles.page} src='/static/img/page/result_01.png'/>*/}
