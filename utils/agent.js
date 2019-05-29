@@ -4,6 +4,7 @@ import Router from 'next/router';
 import store from 'store';
 import { Toast } from 'antd-mobile';
 import storage from './storage';
+import { getCookie } from '@utils/utils';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
@@ -163,7 +164,7 @@ const Report = {
     return requests.get(`${host}/attr_report?attr=${attrId}`);
   },
   getPayParams: (type) => {
-    return requests.post(`${host}/payment?type=${type}`);
+    return requests.post(`${host}/payment?type=${type}&groupid=${getCookie('groupid') || '1'}`);
   },
   queryOrderStatus: (orderid) => {
     return requests.get(`${host}/payment?out_trade_no=${orderid}`);
