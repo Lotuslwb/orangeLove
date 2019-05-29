@@ -27,8 +27,8 @@ import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
 import { Radar } from 'react-chartjs';
-import { getCookie, getRandomInt, payConfig } from '@utils/utils';
-import { setCookie } from '../../../utils/utils';
+import { setCookie, getCookie, getRandomInt, payConfig } from '@utils/utils';
+import {starMap} from '@constants/star';
 
 const RadioItem = Radio.RadioItem;
 
@@ -197,8 +197,8 @@ class Page extends React.Component {
     this.setState({ posterVisible: true });
   };
 
-  renderPoster = () => {
-    const { posterVisible, firstId } = this.state;
+  renderPoster = (postId) => {
+    const { posterVisible } = this.state;
     return (
       <div style={posterVisible ? { display: 'block' } : { display: 'none' }}>
         <div className={styles.mask} />
@@ -214,9 +214,7 @@ class Page extends React.Component {
             </div>
             <div className={styles['md-content']}>
               <img
-                src={`/static/img/poster/attr${firstId}-${getCookie(
-                  'random'
-                )}.jpg`}
+                src={`/static/img/poster/attr${postId}.jpg`}
                 className={styles.post}
               />
             </div>
@@ -254,6 +252,8 @@ class Page extends React.Component {
     const attr = attrList[0].attrId;
     const lock = !!!report.unlock;
     const lockTopic = lock && !shared;
+
+    const postId = `${firstId}-${getCookie('random')}`
     // const attrLen = attrList.length;
     // let summary = `宝贝的优势智能是${attrList[0].attrName}，${
     //   attrList[1].attrName
@@ -281,15 +281,14 @@ class Page extends React.Component {
     //         }
     //     ]
     // };
+
     return (
       <>
         <div className={styles.main}>
           <div className={styles.sectionHead}>
             <div className={styles.avatar}>
               <img
-                src={`/static/img/avatar/attr${firstId}-${getCookie(
-                  'random'
-                )}.png`}
+                src={`/static/img/avatar/attr${postId}.png`}
                 alt=""
               />
             </div>
@@ -310,9 +309,9 @@ class Page extends React.Component {
               )}
             </div> */}
             <div className={styles.sentences}>
-              {(report.sentences || []).map(sentence => {
-                return <div>{sentence}</div>;
-              })}
+              <div>哇！您的宝贝<span className={styles.highlight}>{report.sentences[0]}</span></div>
+              <div>在<span className={styles.highlight}>{report.sentences[1]}</span>上具有天赋特质</div>
+              <div>有望成为下一个<span className={styles.highlight}>{starMap[postId]}</span>哦</div>
             </div>
             <img
               src="/static/img/btn_poster.png"
@@ -738,7 +737,7 @@ class Page extends React.Component {
             <div className={styles['modal-title-wrapper']}>
               <div className={styles['modal-title']}>请输入邀请码解锁报告</div>
               <div className={styles['modal-title']}>
-                或支付<span className={styles.emphasize}>￥199</span>查看
+                或支付<span className={styles.emphasize}>￥{(report.total_fee / 100).toFixed(2)}</span>查看
               </div>
             </div>
             <InputItem
@@ -782,7 +781,7 @@ class Page extends React.Component {
         >
           <p>即将上线，敬请期待！</p>
         </Modal>
-        {this.renderPoster()}
+        {this.renderPoster(postId)}
       </>
     );
   }

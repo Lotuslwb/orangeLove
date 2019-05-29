@@ -1,4 +1,4 @@
-const starMap = {
+export const starMap = {
   '1-1': '杨丽萍',
   '1-2': '李小鹏',
   '1-3': '孙杨',

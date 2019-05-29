@@ -80,9 +80,9 @@ class Page extends React.Component {
       //     ]
       //   };
       this.setState({
-        report: data || {},
+        report: data || {}
       });
-      this.renderRadar({data: data.radarData, id: 'myChart'})
+      this.renderRadar({ data: data.radarData, id: 'myChart' });
     } catch (e) {
       alert('该年龄段暂不支持报告分析');
     } finally {
@@ -136,6 +136,21 @@ class Page extends React.Component {
     chart.render();
   };
 
+  getStar = star => {
+    let imgs = [];
+    for (let i = 0; i < star; i++) {
+      imgs.push(
+        <img src="/static/img/star-active.png" className={styles.star} />
+      );
+    }
+    for (let i = star; i < 5; i++) {
+      imgs.push(
+        <img src="/static/img/star-inactive.png" className={styles.star} />
+      );
+    }
+    return imgs;
+  };
+
   render() {
     const {
       seriesData,
@@ -146,15 +161,12 @@ class Page extends React.Component {
         direction = [],
         game1 = [],
         game2 = [],
-        game3 = []
+        game3 = [],
+        star
       } = {}
     } = this.state;
     const games = [game1, game2];
-    // const testData = {
-    //     labels: ["Eating","Drinking","Sleeping","Designing","Coding","Cycling","Running"],
-    //     datasets: [{"label":"My First Dataset","data":[65,59,90,81,56,55,40],"fill":true,"backgroundColor":"rgba(255, 99, 132, 0.2)","borderColor":"rgb(255, 99, 132)","pointBackgroundColor":"rgb(255, 99, 132)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(255, 99, 132)"},{"label":"My Second Dataset","data":[28,48,40,19,96,27,100],"fill":true,"backgroundColor":"rgba(54, 162, 235, 0.2)","borderColor":"rgb(54, 162, 235)","pointBackgroundColor":"rgb(54, 162, 235)","pointBorderColor":"#fff","pointHoverBackgroundColor":"#fff","pointHoverBorderColor":"rgb(54, 162, 235)"}]
-    // }
-    // const testOptions = {"elements":{"line":{"tension":0,"borderWidth":3}}}
+
     return (
       <div className={styles.page}>
         <div className={styles.sectionHead}>
@@ -166,6 +178,9 @@ class Page extends React.Component {
             <div className={styles.title}>智能分析</div>
             <div className={styles.radarWrapper}>
               <canvas id="myChart" width="300" height="300" />
+              <div className={styles.rate}>
+                {this.getStar(star)}
+              </div>
               {/* {seriesData && (
                 <Radar
                   data={testData}
@@ -184,7 +199,7 @@ class Page extends React.Component {
               })}
             </div>
           </div>
-          <div className={styles.card}>
+          {/* <div className={styles.card}>
             <div className={styles.title}>养育建议</div>
             <div className={styles.content}>
               {raise.map(item => {
@@ -199,9 +214,9 @@ class Page extends React.Component {
                 return <div>{item}</div>;
               })}
             </div>
-          </div>
+          </div> */}
         </div>
-        <div className={styles['card-title']}>教育游戏</div>
+        {/* <div className={styles['card-title']}>教育游戏</div>
         <Carousel
           className={styles.carousel}
           cellSpacing={10}
@@ -216,7 +231,7 @@ class Page extends React.Component {
               <div className={styles.content}>{game[1]}</div>
             </div>
           ))}
-        </Carousel>
+        </Carousel> */}
       </div>
     );
   }

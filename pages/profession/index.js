@@ -101,8 +101,8 @@ class Page extends React.Component {
         reports: attrs
       });
       attrs.map((attr, index) => {
-        this.renderRadar({data: attr.radarData, id: `myChart-${index+1}`})
-      })
+        this.renderRadar({ data: attr.radarData, id: `myChart-${index + 1}` });
+      });
     } catch (e) {
       alert('该年龄段暂不支持报告分析');
     } finally {
@@ -203,14 +203,14 @@ class Page extends React.Component {
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
     const attrLen = attrList.length;
-    let summary = `[解读] ${name}宝贝，在${attrList[0].attrName}、${
-      attrList[1].attrName
-    }、${attrList[2].attrName}上有天赋特质。在${
-      attrList[attrLen - 3].attrName
-    }、
-    ${attrList[attrLen - 2].attrName}、${
-      attrList[attrLen - 1].attrName
-    }的发展上略显不足，需要进一步加强。`;
+    // let summary = `[解读] ${name}宝贝，在${attrList[0].attrName}、${
+    //   attrList[1].attrName
+    // }、${attrList[2].attrName}上有天赋特质。在${
+    //   attrList[attrLen - 3].attrName
+    // }、
+    // ${attrList[attrLen - 2].attrName}、${
+    //   attrList[attrLen - 1].attrName
+    // }的发展上略显不足，需要进一步加强。`;
     return (
       <>
         <div className={styles['pre-title']}>
@@ -230,7 +230,19 @@ class Page extends React.Component {
             />
           )}
         </div>
-        <div className={styles.para}>{summary}</div>
+        <div className={styles.para}>
+          [解读] <span className={styles.highlight}>{name}</span>宝贝，在
+          <span className={styles.highlight}>
+            {attrList[0].attrName}、{attrList[1].attrName}、
+            {attrList[2].attrName}
+          </span>
+          上有天赋特质。在
+          <span className={styles.highlight}>
+            {attrList[attrLen - 3].attrName}、{attrList[attrLen - 2].attrName}、
+            {attrList[attrLen - 1].attrName}
+          </span>
+          的发展上略显不足，需要进一步加强。
+        </div>
         <br />
       </>
     );
@@ -616,6 +628,7 @@ class Page extends React.Component {
           />
           <div className={styles.radarWrapper}>
             <canvas id={`myChart-${index + 1}`} width="300" height="300" />
+            {/* <div className={styles.rate}>{this.getStar(attr.star)}</div> */}
             {/* {seriesData && (
               <Radar
                 data={seriesData}
@@ -643,10 +656,35 @@ class Page extends React.Component {
     });
   };
 
+  getStar = star => {
+    let imgs = [];
+    for (let i = 0; i < star; i++) {
+      imgs.push(
+        <img src="/static/img/star-active.png" className={styles.star} />
+      );
+    }
+    for (let i = star; i < 5; i++) {
+      imgs.push(
+        <img src="/static/img/star-inactive.png" className={styles.star} />
+      );
+    }
+    return imgs;
+  };
+
   renderSuggestions = () => {
-    const { reports } = this.state;
-    const advantages = reports.slice(0, 3);
-    const disadvantages = reports.slice(5);
+    const { reports, report } = this.state;
+    if (!report.attrList || !report.attrList.length) return null;
+    const advantages = [];
+    const disadvantages = [];
+    const getReportById = attrId => {
+      return reports.find(attr => attr.attr_id == attrId);
+    };
+    advantages.push(getReportById(report.attrList[0].attrId));
+    advantages.push(getReportById(report.attrList[1].attrId));
+    advantages.push(getReportById(report.attrList[2].attrId));
+    disadvantages.push(getReportById(report.attrList[5].attrId));
+    disadvantages.push(getReportById(report.attrList[6].attrId));
+    disadvantages.push(getReportById(report.attrList[7].attrId));
     const getAttrs = attrs => {
       return attrs.map(report => {
         const {
