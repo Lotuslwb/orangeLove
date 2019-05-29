@@ -217,12 +217,12 @@ class Page extends React.Component {
         <div className={styles['pre-title']}>
           第一部分&nbsp;&nbsp;天赋测评总报告
         </div>
-        <div className={styles.radarWrapper}>
+        <div className={styles.radarWrapper} style={{marginTop: -30}}>
           {radarData && (
             <Radar
               data={radarData}
-              width={300}
-              height={300}
+              width={250}
+              height={250}
               options={{
                 legend: {
                   display: false
@@ -628,7 +628,7 @@ class Page extends React.Component {
             src={`/static/img/pro/attr-${index + 1}.png`}
           />
           <div className={styles.radarWrapper}>
-            <canvas id={`myChart-${index + 1}`} width="300" height="300" />
+            <canvas id={`myChart-${index + 1}`} width="250" height="250" />
             {/* <div className={styles.rate}>{this.getStar(attr.star)}</div> */}
             {/* {seriesData && (
               <Radar

@@ -178,10 +178,7 @@ class Page extends React.Component {
           <div className={styles.card}>
             <div className={styles.title}>智能分析</div>
             <div className={styles.radarWrapper}>
-              <canvas id="myChart" width="300" height="300" />
-              <div className={styles.rate}>
-                {this.getStar(star)}
-              </div>
+              <canvas id="myChart" width="250" height="250" />
               {/* {seriesData && (
                 <Radar
                   data={testData}
@@ -191,6 +188,7 @@ class Page extends React.Component {
                 />
               )} */}
             </div>
+            <div className={styles.rate}>{this.getStar(star)}</div>
           </div>
           <div className={styles.card}>
             <div className={styles.title}>结果分析</div>

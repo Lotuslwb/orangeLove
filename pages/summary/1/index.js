@@ -325,8 +325,8 @@ class Page extends React.Component {
               {radarData && (
                 <Radar
                   data={radarData}
-                  width={300}
-                  height={300}
+                  width={250}
+                  height={250}
                   options={{
                     legend: {
                       display: false
