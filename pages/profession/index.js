@@ -112,7 +112,8 @@ class Page extends React.Component {
   renderRadar = ({ data, id }) => {
     const chart = new F2.Chart({
       id,
-      pixelRatio: window.devicePixelRatio // 指定分辨率
+      pixelRatio: window.devicePixelRatio, // 指定分辨率
+      padding: 20
     });
     chart.coord('polar');
     chart.source(data, {
