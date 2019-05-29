@@ -151,7 +151,7 @@ class Page extends React.Component {
     const sucCb = async () => {
       // 根据订单查询是否支付成功，若成功，若成功，则使用成功的回调，否则使用失败的回调
       const test = await agent.Report.queryOrderStatus(out_trade_no);
-      alert(JSON.stringify(test));
+      // alert(JSON.stringify(test));
       if (test.trade_state != 'SUCCESS') {
         Toast.info(test.trade_state_desc);
       } else {
