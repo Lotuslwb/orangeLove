@@ -184,8 +184,8 @@ class Page extends React.Component {
     }
   };
 
-  gotoAttr = ({ attr, shareCount = 0 }) => {
-    if (shareCount > 0) {
+  gotoAttr = ({ attr, lockTopic = true }) => {
+    if (!lockTopic) {
       Router.push(`/report?attrId=${attr.attrId}`);
     } else {
       Toast.info('分享给好友解锁优化建议');
@@ -255,6 +255,7 @@ class Page extends React.Component {
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
     const lock = !!!report.unlock;
+    const lockTopic = lock && !shared;
     // const attrLen = attrList.length;
     // let summary = `宝贝的优势智能是${attrList[0].attrName}，${
     //   attrList[1].attrName
@@ -349,18 +350,18 @@ class Page extends React.Component {
           </div>
           <div className={styles.sectionMid}>
             <div style={{ fontSize: '20px', textAlign: 'center' }}>
-              优势智能
+              八大智能
             </div>
-            <div className={styles.tips}>
+            {/* <div className={styles.tips}>
               * 劣势智能如何增强请查看专业版报告
-            </div>
+            </div> */}
             <div className={styles.row}>
               {attrList[0] && (
                 <div
                   key={`attr-0`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[0],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -390,7 +391,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -403,7 +404,7 @@ class Page extends React.Component {
                   key={`attr-1`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[1],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -433,7 +434,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -447,7 +448,7 @@ class Page extends React.Component {
                   key={`attr-2`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[2],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -477,7 +478,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -490,7 +491,7 @@ class Page extends React.Component {
                   key={`attr-3`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[3],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -514,7 +515,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -528,7 +529,7 @@ class Page extends React.Component {
                   key={`attr-4`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[4],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -552,7 +553,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -565,7 +566,7 @@ class Page extends React.Component {
                   key={`attr-5`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[5],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -589,7 +590,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -603,7 +604,7 @@ class Page extends React.Component {
                   key={`attr-6`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[6],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -627,7 +628,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
@@ -640,7 +641,7 @@ class Page extends React.Component {
                   key={`attr-7`}
                   onClick={this.gotoAttr.bind(this, {
                     attr: attrList[7],
-                    shareCount
+                    lockTopic
                   })}
                   className={styles.cell}
                 >
@@ -664,7 +665,7 @@ class Page extends React.Component {
                     <img
                       className={styles.lock}
                       style={
-                        !shared ? { display: 'inherit' } : { display: 'none' }
+                        lockTopic ? { display: 'inherit' } : { display: 'none' }
                       }
                       src={'/static/img/icon/icon_lock01.png'}
                     />
