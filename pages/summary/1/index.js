@@ -27,7 +27,8 @@ import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
 import { Radar } from 'react-chartjs';
-import { getCookie, payConfig } from '@utils/utils';
+import { getCookie, getRandomInt, payConfig } from '@utils/utils';
+import { setCookie } from '../../../utils/utils';
 
 const RadioItem = Radio.RadioItem;
 
@@ -55,7 +56,6 @@ class Page extends React.Component {
       shared: false,
       shareCount: 0,
       firstId: 0,
-      random: 0,
       host: ''
     };
   }
@@ -75,11 +75,12 @@ class Page extends React.Component {
       // if (report.shareCount < 1) {
       //   labels = emptyLabels;
       // }
+      if (!getCookie('random')) {
+        setCookie('random', getRandomInt(3));
+      }
       if (report.attrList && report.attrList.length > 0) {
-        const random = this.getRandomInt(3);
         this.setState({
-          firstId: report.attrList[0].attrId,
-          random
+          firstId: report.attrList[0].attrId
         });
       }
       const radarData = {
@@ -119,10 +120,6 @@ class Page extends React.Component {
         shared: report.shareCount > 0,
         host: window.location.protocol + '//' + window.location.host
       });
-      const payParams = await agent.Report.getPayParams(1);
-      this.setState({
-        payParams
-      });
     } catch (e) {
     } finally {
     }
@@ -146,7 +143,11 @@ class Page extends React.Component {
       Router.push('/profession');
     }
   };
-  handlePay = () => {
+  handlePay = async () => {
+    const payParams = await agent.Report.getPayParams(1);
+    this.setState({
+      payParams
+    });
     const { jsconfig, out_trade_no } = this.state.payParams;
     const sucCb = async () => {
       // 根据订单查询是否支付成功，若成功，若成功，则使用成功的回调，否则使用失败的回调
@@ -197,7 +198,7 @@ class Page extends React.Component {
   };
 
   renderPoster = () => {
-    const { posterVisible, firstId, random } = this.state;
+    const { posterVisible, firstId } = this.state;
     return (
       <div style={posterVisible ? { display: 'block' } : { display: 'none' }}>
         <div className={styles.mask} />
@@ -213,7 +214,9 @@ class Page extends React.Component {
             </div>
             <div className={styles['md-content']}>
               <img
-                src={`/static/img/poster/attr${firstId}-${random}.jpg`}
+                src={`/static/img/poster/attr${firstId}-${getCookie(
+                  'random'
+                )}.jpg`}
                 className={styles.post}
               />
             </div>
@@ -225,10 +228,6 @@ class Page extends React.Component {
         </div>
       </div>
     );
-  };
-
-  getRandomInt = max => {
-    return Math.floor(Math.random() * Math.floor(max)) + 1;
   };
 
   handleAd = () => {
@@ -248,7 +247,6 @@ class Page extends React.Component {
       shareCount,
       shared,
       firstId,
-      random,
       host
     } = this.state;
     const attrList = report.attrList || [];
@@ -289,7 +287,9 @@ class Page extends React.Component {
           <div className={styles.sectionHead}>
             <div className={styles.avatar}>
               <img
-                src={`/static/img/avatar/attr${firstId}-${random}.png`}
+                src={`/static/img/avatar/attr${firstId}-${getCookie(
+                  'random'
+                )}.png`}
                 alt=""
               />
             </div>

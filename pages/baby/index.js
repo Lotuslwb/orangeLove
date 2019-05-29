@@ -29,6 +29,7 @@ import styles from './index.less';
 import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
+import { setCookie } from '@utils/utils';
 
 const RadioItem = Radio.RadioItem;
 
@@ -59,6 +60,7 @@ class Page extends React.Component {
     try {
       const data = await agent.Baby.get();
       if (data && data.user_id) {
+        setCookie('name', data.name);
         this.setState({
           hasInfo: true,
           birthday: new Date(data.birthday),

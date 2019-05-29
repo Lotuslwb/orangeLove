@@ -107,6 +107,10 @@ export function getQueryVariable(variable) {
   }
   return false;
 }
+export const getRandomInt = max => {
+  return Math.floor(Math.random() * Math.floor(max)) + 1;
+};
+
 export const payConfig = (config, sucCb, errCb) => {
   function onBridgeReady() {
     WeixinJSBridge.invoke('getBrandWCPayRequest', config, function(res) {
