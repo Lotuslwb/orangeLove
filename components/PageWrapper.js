@@ -38,7 +38,7 @@ const PageWrapper = ComposedComponent => {
               storage.UserInfo.set(data);
               agent.Wechat.getConfig().then(config => {
                 config.jsApiList = ['onMenuShareAppMessage','chooseWXPay'];
-                config.debug = true;
+                // config.debug = true;
                 wx.config(config);
                 wx.ready(function() {
                   //需在用户可能点击分享按钮前就先调用
@@ -69,7 +69,7 @@ const PageWrapper = ComposedComponent => {
       } else {
         agent.Wechat.getConfig().then(config => {
           config.jsApiList = ['onMenuShareAppMessage', 'chooseWXPay'];
-          config.debug = true;
+          // config.debug = true;
           wx.config(config);
           wx.ready(function() {
             //需在用户可能点击分享按钮前就先调用

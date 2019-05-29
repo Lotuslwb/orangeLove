@@ -51,6 +51,7 @@ const responseBody = res => {
   } else if (body.errno === 0) {
     return body.data;
   } else {
+    alert(body);
     Toast.info(body.errmsg);
     return null;
   }
@@ -161,8 +162,11 @@ const Report = {
   getByAttr: attrId => {
     return requests.get(`${host}/attr_report?attr=${attrId}`);
   },
-  getPayParams: () => {
-    return requests.post(`${host}/payment`);
+  getPayParams: (type) => {
+    return requests.post(`${host}/payment?type=${type}`);
+  },
+  queryOrderStatus: (orderid) => {
+    return requests.get(`${host}/payment?out_trade_no=${orderid}`);
   }
 };
 

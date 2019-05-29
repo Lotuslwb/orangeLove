@@ -27,7 +27,7 @@ import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
 import { Radar } from 'react-chartjs';
-import { getCookie } from '@utils/utils';
+import { getCookie, payConfig } from '@utils/utils';
 
 const RadioItem = Radio.RadioItem;
 
@@ -119,7 +119,7 @@ class Page extends React.Component {
         shared: report.shareCount > 0,
         host: window.location.protocol + '//' + window.location.host
       });
-      const payParams = await agent.Report.getPayParams();
+      const payParams = await agent.Report.getPayParams(1);
       this.setState({
         payParams
       });
@@ -127,27 +127,6 @@ class Page extends React.Component {
     } finally {
     }
   }
-
-  payConfig = config => {
-    function onBridgeReady() {
-      WeixinJSBridge.invoke('getBrandWCPayRequest', config, function(res) {
-        if (res.err_msg == 'get_brand_wcpay_request:ok') {
-          // 使用以上方式判断前端返回,微信团队郑重提示：
-          //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-        }
-      });
-    }
-    if (typeof WeixinJSBridge == 'undefined') {
-      if (document.addEventListener) {
-        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-      } else if (document.attachEvent) {
-        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-      }
-    } else {
-      onBridgeReady();
-    }
-  };
 
   showModal = () => {
     const { testVisiable } = this.state;
@@ -167,9 +146,22 @@ class Page extends React.Component {
       Router.push('/profession');
     }
   };
-  handlePay = () => {
-    const { jsconfig } = this.state.payParams;
-    this.payConfig(jsconfig);
+  handlePay = async () => {
+    const { jsconfig, out_trade_no } = this.state.payParams;
+    const sucCb = () => {
+
+      console.log('pay success');
+      // 刷新页面。解锁的逻辑在后端处理
+      window.location.reload();
+    };
+    const errCb = () => {
+      Toast.info('支付失败');
+    };
+    // 根据订单查询是否支付成功，若成功，若成功，则使用成功的回调，否则使用失败的回调
+    const test = await agent.Report.queryOrderStatus(out_trade_no);
+    alert(JSON.stringify(test));
+
+    payConfig(jsconfig, sucCb, errCb);
   };
 
   handleTest = ({ lock }) => {
