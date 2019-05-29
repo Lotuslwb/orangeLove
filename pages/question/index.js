@@ -105,7 +105,7 @@ class Page extends React.Component {
         await agent.Question.answerList({
           answerList
         });
-        Router.push('/summary');
+        Router.push('/summary/1');
       } else {
         let currentQ = Object.entries(answerMap)[questionIndex];
         // 如果这一题没有答案，则不能跳转；有答案才能跳转

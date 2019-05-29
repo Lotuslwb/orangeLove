@@ -128,7 +128,7 @@ class Page extends React.Component {
         return;
       } else {
         if (!needUpdate && hasReport) {
-          Router.push('/summary');
+          Router.push('/summary/1');
           return;
         } else {
           Router.push('/question');
