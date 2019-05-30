@@ -88,6 +88,15 @@ class Page extends React.Component {
     // Router.replace(`/question?qidx=${this.questionIndex - 1}`);
   };
 
+  test = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log('in test')
+        resolve(1)
+      }, 800);
+    })
+  }
+
   handleNext = async () => {
     try {
       const { questionIndex, answerMap, questionList } = this.state;
@@ -102,6 +111,7 @@ class Page extends React.Component {
         this.setState({
           loading: true
         });
+        // await this.test()
         await agent.Question.answerList({
           answerList
         });
@@ -118,9 +128,9 @@ class Page extends React.Component {
     } catch (e) {
       console.log(e);
     } finally {
-      this.setState({
-        loading: false
-      });
+      // this.setState({
+      //   loading: false
+      // });
     }
     // console.log(this.questionIndex + 1);
     // Router.push(`/question?qidx=${this.questionIndex + 1}`);
@@ -177,15 +187,18 @@ class Page extends React.Component {
           />{' '}
         </div>{' '}
         {/* <div className={styles.number}> {questionIndex + 1} / {questionList.length}</div> */}{' '}
-        <div className={styles.card}>
+        <div
+          className={styles.card}
+          style={
+            loading ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }
+          }
+        >
           <div className={styles.card__body}>
             <div className={styles.question}> {question.name} </div>{' '}
             <div
               onClick={this.handleChoose.bind(this, question, 'A')}
               className={
-                'A' === selected
-                  ? styles.answer__chosen
-                  : styles.answer
+                'A' === selected ? styles.answer__chosen : styles.answer
               }
             >
               完全能做到{' '}
@@ -193,9 +206,7 @@ class Page extends React.Component {
             <div
               onClick={this.handleChoose.bind(this, question, 'B')}
               className={
-                'B' === selected
-                  ? styles.answer__chosen
-                  : styles.answer
+                'B' === selected ? styles.answer__chosen : styles.answer
               }
             >
               有时能做到， 有时不能做到{' '}
@@ -203,9 +214,7 @@ class Page extends React.Component {
             <div
               onClick={this.handleChoose.bind(this, question, 'C')}
               className={
-                'C' === selected
-                  ? styles.answer__chosen
-                  : styles.answer
+                'C' === selected ? styles.answer__chosen : styles.answer
               }
             >
               完全做不到{' '}
@@ -213,9 +222,7 @@ class Page extends React.Component {
             <div
               onClick={this.handleChoose.bind(this, question, 'D')}
               className={
-                'D' === selected
-                  ? styles.answer__chosen
-                  : styles.answer
+                'D' === selected ? styles.answer__chosen : styles.answer
               }
             >
               不清楚{' '}
@@ -232,7 +239,14 @@ class Page extends React.Component {
             <div className={styles.text}>上一题 </div>{' '}
           </div>{' '}
           <div className={styles['action-wp']} onClick={this.handleNext}>
-            <div className={styles.text}>下一题 </div>{' '}
+            <div
+              className={styles.text}
+              style={
+                loading ? { pointerEvents: 'none' } : { pointerEvents: 'auto' }
+              }
+            >
+              下一题{' '}
+            </div>{' '}
             <img
               src="/static/img/prev.png"
               className={classNames(styles.icon, styles.next)}

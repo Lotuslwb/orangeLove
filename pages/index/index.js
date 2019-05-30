@@ -49,8 +49,8 @@ class Page extends React.Component {
     const data = await agent.System.getGroup(id);
     this.setState({
       cover: data.coverpicPath,
-      host: window.location.protocol + '//' + window.location.host,
-    })
+      host: window.location.protocol + '//' + window.location.host
+    });
     // setCookie('cover', data.coverpicPath);
     setCookie('adpath', data.adpicPath);
     setCookie('adurl', data.adurl);
@@ -80,11 +80,13 @@ class Page extends React.Component {
       <>
         {/*<Button type="primary" onClick={this.handleTest}>点击测试</Button>*/}
         {loading && <ActivityIndicator toast text="正在加载" />}
-        <img
-          onClick={this.handleTest}
-          className={styles.page}
-          src={host ? `${host}:8360${cover}` : '/static/img/page/page1.jpg'}
-        />
+        <div className={styles.wp} onClick={this.handleTest}>
+          <img
+            className={styles.page}
+            src={host ? `${host}:8360${cover}` : '/static/img/page/page1.jpg'}
+          />
+          <img className={styles.start} src="/static/img/page/btn_start.png" />
+        </div>
       </>
     );
   }
