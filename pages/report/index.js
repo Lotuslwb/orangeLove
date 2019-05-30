@@ -84,7 +84,7 @@ class Page extends React.Component {
       });
       this.renderRadar({ data: data.radarData, id: 'myChart' });
     } catch (e) {
-      alert('该年龄段暂不支持报告分析');
+      // alert('该年龄段暂不支持报告分析');
     } finally {
     }
   }

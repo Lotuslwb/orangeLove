@@ -52,7 +52,6 @@ class Page extends React.Component {
       for (let i = 1; i <= total; i++) {
         requests.push(agent.Report.getByAttr(i));
       }
-
       const data = await Promise.all(requests);
       const user = data[0];
       const report = data[1];
@@ -78,33 +77,17 @@ class Page extends React.Component {
           }
         ]
       };
-      const doughnutData = [
-        {
-          value: 90,
-          color: '#57ddb1',
-          highlight: '#57ddb1',
-          label: '90'
-        },
-        {
-          value: 10,
-          color: 'rgba(255, 255, 255, 0)',
-          highlight: '#5AD3D1',
-          label: 'Green'
-        }
-      ];
 
       this.setState({
         name: user.name,
         report,
         radarData,
-        doughnutData,
         reports: attrs
       });
       attrs.map((attr, index) => {
         this.renderRadar({ data: attr.radarData, id: `myChart-${index + 1}` });
       });
     } catch (e) {
-      alert('该年龄段暂不支持报告分析');
     } finally {
     }
   }
@@ -199,7 +182,7 @@ class Page extends React.Component {
   };
 
   renderTotalRadar = () => {
-    const { name, report = {}, doughnutData, radarData } = this.state;
+    const { name, report = {}, radarData } = this.state;
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
@@ -217,7 +200,7 @@ class Page extends React.Component {
         <div className={styles['pre-title']}>
           第一部分&nbsp;&nbsp;天赋测评总报告
         </div>
-        <div className={styles.radarWrapper} style={{marginTop: -30}}>
+        <div className={styles.radarWrapper} style={{ marginTop: -30 }}>
           {radarData && (
             <Radar
               data={radarData}
@@ -696,7 +679,7 @@ class Page extends React.Component {
           game1 = [],
           game2 = [],
           game3 = []
-        } = report;
+        } = report || {};
         const games = [game1, game2, game3];
         return (
           <div className={styles.innerpage}>

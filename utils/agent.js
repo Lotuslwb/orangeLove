@@ -52,7 +52,6 @@ const responseBody = res => {
   } else if (body.errno === 0) {
     return body.data;
   } else {
-    alert(body);
     Toast.info(body.errmsg);
     return null;
   }

@@ -299,7 +299,7 @@ class Page extends React.Component {
             </div>{' '}
           </div>{' '}
         </div>{' '}
-        <div className={styles.tips}>
+        <div className={styles.tips} style={hasInfo ? {display: 'block'} : {display: 'none'}}>
           <div>* 每个年龄段仅可测试一次</div>
           <div>您的宝宝下个可测年龄段为{nextlabel}</div>
         </div>
