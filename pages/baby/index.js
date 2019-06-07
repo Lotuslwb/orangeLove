@@ -53,6 +53,9 @@ class Page extends React.Component {
       needUpdate: false,
       hasInfo: false,
       nextlabel: '',
+      visible: false,
+      modifyBirth: false,
+      canChange: false
     };
   }
 
@@ -70,6 +73,7 @@ class Page extends React.Component {
           hasReport: !!data.hasReport,
           needUpdate: data.needUpdate,
           nextlabel: data.nextlabel,
+          canChange: !(data.unlock || data.changedCount)
         });
       }
     } catch (e) {
@@ -112,7 +116,16 @@ class Page extends React.Component {
 
   handleSubmit = async () => {
     try {
-      const { needUpdate, hasReport, hasInfo, birthday, name, mobile, gender } = this.state;
+      const {
+        needUpdate,
+        hasReport,
+        hasInfo,
+        birthday,
+        name,
+        mobile,
+        gender,
+        modifyBirth
+      } = this.state;
       if (!hasInfo) {
         // 提交前再次校验
         if (mobile.replace(/\s/g, '').length < 11) {
@@ -129,7 +142,16 @@ class Page extends React.Component {
         Router.push('/question');
         return;
       } else {
-        if (!needUpdate && hasReport) {
+        if (modifyBirth) {
+          const params = {
+            birthday: birthday.getTime(),
+            name,
+            gender,
+            mobile
+          };
+          await agent.Baby.add(params);
+          window.location.reload();
+        } else if (!needUpdate && hasReport) {
           Router.push('/summary/1');
           return;
         } else {
@@ -164,7 +186,9 @@ class Page extends React.Component {
       gender,
       phoneError,
       mobile,
-      nextlabel
+      nextlabel,
+      canChange,
+      modifyBirth
     } = this.state;
     const CustomChildren = ({ extra, onClick, children }) => (
       <div
@@ -174,7 +198,7 @@ class Page extends React.Component {
           backgroundColor: '#fff',
           height: '40px',
           lineHeight: '40px',
-          color: hasInfo ? '#bbb' : '#507DDC'
+          color: hasInfo && !modifyBirth ? '#bbb' : '#507DDC'
         }}
       >
         {extra}{' '}
@@ -182,128 +206,201 @@ class Page extends React.Component {
     );
 
     let btnText = '开始测试';
-    if (!needUpdate && hasReport) {
+    if (hasInfo && modifyBirth) {
+      btnText = '保存';
+    } else if (!needUpdate && hasReport) {
       btnText = '查看报告';
     }
+
     return (
-      <div className={styles.page}>
-        <div>
-          <img className={styles.head} src="/static/img/baby/head.png" />
-        </div>{' '}
-        <div className={styles.card}>
-          <div className={styles.card__body}>
-            <div className={styles.item}>
-              <div className={styles.label}> 宝宝生日 </div>{' '}
-              <DatePicker
-                // {...getFieldProps('birthday', {
-                //     initialValue: new Date(),
-                //     rules: [
-                //         { required: true, message: '请选择出生日期' },
-                //         { validator: this.validateDatePicker },
-                //     ],
-                // })}
-                mode="date"
-                format="YYYY-MM-DD"
-                title="请选择日期"
-                value={birthday}
-                onChange={this.changeBirthday}
-                extra="请点击选择"
-                disabled={hasInfo}
-              >
-                <CustomChildren />
-              </DatePicker>{' '}
-            </div>{' '}
-            <div className={styles.item}>
-              <div className={styles.label}> 宝宝性别 </div>{' '}
-              <div className={styles.inline}>
-                <div
-                  className={styles['gender-wrapper']}
-                  onClick={() => this.chooseGender(1)}
-                >
-                  <img
-                    className={styles.item__gender}
-                    src="/static/img/icon/boy.png"
-                  />
-                  <div
-                    className={styles.text}
-                    style={
-                      gender == 1
-                        ? {
-                            color: '#3366cc'
-                          }
-                        : {
-                            color: '#d9d9d9'
-                          }
-                    }
+      <>
+        <div className={styles.page}>
+          <div>
+            <img className={styles.head} src="/static/img/baby/head.png" />
+          </div>{' '}
+          <div className={styles.card}>
+            <div className={styles.card__body}>
+              <div className={styles.item}>
+                <div className={styles.label}> 宝宝生日 </div>{' '}
+                <div className={styles.birthWrapper}>
+                  <DatePicker
+                    // {...getFieldProps('birthday', {
+                    //     initialValue: new Date(),
+                    //     rules: [
+                    //         { required: true, message: '请选择出生日期' },
+                    //         { validator: this.validateDatePicker },
+                    //     ],
+                    // })}
+                    mode="date"
+                    format="YYYY-MM-DD"
+                    title="请选择日期"
+                    value={birthday}
+                    onChange={this.changeBirthday}
+                    extra="请点击选择"
+                    disabled={hasInfo && !modifyBirth}
                   >
-                    男{' '}
-                  </div>{' '}
-                  {/* <img className={styles.item__checked} style={gender == 1 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */}{' '}
-                </div>{' '}
-                <div
-                  className={styles['gender-wrapper']}
-                  onClick={() => this.chooseGender(2)}
-                >
-                  <img
-                    className={styles.item__gender}
-                    src="/static/img/icon/girl.png"
-                  />
+                    <CustomChildren />
+                  </DatePicker>
+                  {hasInfo ? (
+                    <img
+                      src="/static/img/info.png"
+                      className={styles['icon-info']}
+                      onClick={() => this.setState({ visible: true })}
+                    />
+                  ) : null}
+                </div>
+              </div>
+              <div className={styles.item}>
+                <div className={styles.label}> 宝宝性别 </div>{' '}
+                <div className={styles.inline}>
                   <div
-                    className={styles.text}
-                    style={
-                      gender == 2
-                        ? {
-                            color: '#3366cc'
-                          }
-                        : {
-                            color: '#d9d9d9'
-                          }
-                    }
+                    className={styles['gender-wrapper']}
+                    onClick={() => this.chooseGender(1)}
                   >
-                    女{' '}
+                    <img
+                      className={styles.item__gender}
+                      src="/static/img/icon/boy.png"
+                    />
+                    <div
+                      className={styles.text}
+                      style={
+                        gender == 1
+                          ? {
+                              color: '#3366cc'
+                            }
+                          : {
+                              color: '#d9d9d9'
+                            }
+                      }
+                    >
+                      男{' '}
+                    </div>{' '}
+                    {/* <img className={styles.item__checked} style={gender == 1 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */}{' '}
                   </div>{' '}
-                  {/* <img className={styles.item__checked} style={gender == 2 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */}{' '}
+                  <div
+                    className={styles['gender-wrapper']}
+                    onClick={() => this.chooseGender(2)}
+                  >
+                    <img
+                      className={styles.item__gender}
+                      src="/static/img/icon/girl.png"
+                    />
+                    <div
+                      className={styles.text}
+                      style={
+                        gender == 2
+                          ? {
+                              color: '#3366cc'
+                            }
+                          : {
+                              color: '#d9d9d9'
+                            }
+                      }
+                    >
+                      女{' '}
+                    </div>{' '}
+                    {/* <img className={styles.item__checked} style={gender == 2 ? { display: 'block' } : { display: 'none' }} src="/static/img/icon/selected.png" /> */}{' '}
+                  </div>{' '}
                 </div>{' '}
               </div>{' '}
-            </div>{' '}
-            <div className={styles.item}>
-              <div className={styles.label}> 宝宝昵称 </div>{' '}
-              <InputItem
-                className={styles.item__name}
-                placeholder=""
-                value={this.state.name}
-                onChange={v =>
-                  this.setState({
-                    name: v
-                  })
-                }
-                disabled={hasInfo}
-              />{' '}
-            </div>{' '}
-            <div className={styles.item}>
-              <div className={styles.label}> 手机号 </div>{' '}
-              <InputItem
-                type="phone"
-                className={styles.item__name}
-                placeholder=""
-                value={mobile}
-                error={phoneError}
-                onErrorClick={this.onPhoneErrorClick}
-                onChange={this.changePhone}
-                disabled={hasInfo}
-              />{' '}
-            </div>{' '}
-            <div className={styles.submit} onClick={this.handleSubmit}>
-              {' '}
-              {btnText}{' '}
+              <div className={styles.item}>
+                <div className={styles.label}> 宝宝昵称 </div>{' '}
+                <InputItem
+                  className={styles.item__name}
+                  placeholder=""
+                  value={this.state.name}
+                  onChange={v =>
+                    this.setState({
+                      name: v
+                    })
+                  }
+                  disabled={hasInfo}
+                />{' '}
+              </div>{' '}
+              <div className={styles.item}>
+                <div className={styles.label}> 手机号 </div>{' '}
+                <InputItem
+                  type="phone"
+                  className={styles.item__name}
+                  placeholder=""
+                  value={mobile}
+                  error={phoneError}
+                  onErrorClick={this.onPhoneErrorClick}
+                  onChange={this.changePhone}
+                  disabled={hasInfo}
+                />{' '}
+              </div>{' '}
+              <div className={styles.submit} onClick={this.handleSubmit}>
+                {' '}
+                {btnText}{' '}
+              </div>{' '}
             </div>{' '}
           </div>{' '}
-        </div>{' '}
-        <div className={styles.tips} style={hasInfo ? {display: 'flex'} : {display: 'none'}}>
-          <div>* 每个年龄段仅可测试一次</div>
-          <div>您的宝宝下个可测年龄段为{nextlabel}</div>
+          <div
+            className={styles.tips}
+            style={hasInfo ? { display: 'flex' } : { display: 'none' }}
+          >
+            <div>* 每个年龄段仅可测试一次</div>
+            <div>您的宝宝下个可测年龄段为{nextlabel}</div>
+          </div>
         </div>
-      </div>
+        <Modal
+          visible={this.state.visible}
+          transparent={true}
+          closable={true}
+          onClose={() => {
+            this.setState({ visible: false });
+          }}
+        >
+          {canChange ? (
+            <div className={styles['md-content']}>
+              <div>每个账户只有一次修改生日的机会</div>
+              <div>是否确认修改生日并重新评测？</div>
+            </div>
+          ) : (
+            <div className={styles['md-content']}>
+              <div>您已修改过一次生日</div>
+              <div>或已经解锁过报告</div>
+              <div>如还需修改生日，请联系客服</div>
+            </div>
+          )}
+          {canChange ? (
+            <div className={styles['btn-group']}>
+              <Button
+                onClick={() => {
+                  this.setState({ visible: false });
+                }}
+              >
+                取消
+              </Button>
+              <Button
+                type="primary"
+                style={{ background: '#fca34a' }}
+                onClick={() => {
+                  this.setState({ modifyBirth: true, visible: false });
+                }}
+              >
+                确定
+              </Button>
+            </div>
+          ) : (
+            <div
+              className={styles['btn-group']}
+              style={{ justifyContent: 'center' }}
+            >
+              <Button
+                type="primary"
+                style={{ background: '#fca34a' }}
+                onClick={() => {
+                  this.setState({ visible: false });
+                }}
+              >
+                确定
+              </Button>
+            </div>
+          )}
+        </Modal>
+      </>
     );
   }
 }
