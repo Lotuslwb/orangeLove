@@ -16,7 +16,8 @@ import {
   TextareaItem,
   Calendar,
   Card,
-  Modal
+  Modal,
+  ActivityIndicator
 } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import PageWrapper from '@components/PageWrapper';
@@ -27,8 +28,9 @@ import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
 import { Radar } from 'react-chartjs';
+import $ from 'jquery';
 import { setCookie, getCookie, getRandomInt, payConfig } from '@utils/utils';
-import {starMap} from '@constants/star';
+import { starMap } from '@constants/star';
 
 const RadioItem = Radio.RadioItem;
 
@@ -56,7 +58,8 @@ class Page extends React.Component {
       shared: false,
       shareCount: 0,
       firstId: 0,
-      host: ''
+      host: '',
+      loading: false
     };
   }
 
@@ -120,10 +123,51 @@ class Page extends React.Component {
         shared: report.shareCount > 0,
         host: window.location.protocol + '//' + window.location.host
       });
+      this.combineImg();
     } catch (e) {
     } finally {
     }
   }
+
+  combineImg = () => {
+    const that = this;
+    this.setState({
+      loading: true
+    });
+    let shareContent = document.getElementById('poster');
+    let width = 300; //获取dom 宽度
+    let height = 425; //获取dom 高度
+    let canvas = document.createElement('canvas'); //创建一个canvas节点
+    let scale = 1; //定义任意放大倍数 支持小数
+    canvas.width = width * scale; //定义canvas 宽度 * 缩放
+    canvas.height = height * scale; //定义canvas高度 *缩放
+    let opts = {
+      scale, // 添加的scale 参数
+      canvas, //自定义 canvas
+      logging: true, //日志开关
+      width, //dom 原始宽度
+      height, //dom 原始高度
+      backgroundColor: 'transparent',
+      useCORS: true
+    };
+    canvas.getContext('2d').scale(scale, scale); //获取context,设置scale
+    const html2canvas = require('html2canvas');
+    html2canvas(shareContent, opts)
+      .then(canvas => {
+        let IMAGE_URL = canvas.toDataURL('image/png');
+        $('#newPoster')
+          .attr('src', IMAGE_URL)
+          .css('display', 'block');
+        $('#original').css('display', 'none');
+        $('#qr').css('display', 'none');
+        that.setState({
+          loading: false
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   showModal = () => {
     const { testVisiable } = this.state;
@@ -197,12 +241,16 @@ class Page extends React.Component {
     this.setState({ posterVisible: true });
   };
 
-  renderPoster = (postId) => {
-    const { posterVisible } = this.state;
+  renderPoster = postId => {
+    const { posterVisible, host } = this.state;
     return (
-      <div style={posterVisible ? { display: 'block' } : { display: 'none' }}>
-        <div className={styles.mask} />
-        <div className={styles['md-wrapper']}>
+      // <div style={posterVisible ? { display: 'block' } : { display: 'none' }}>
+      <div>
+        <div
+          className={styles.mask}
+          style={posterVisible ? { right: 0 } : { right: 9999 }}
+        />
+        <div className={styles['md-wrapper']} style={posterVisible ? { left: '50%' } : { left: -9999 }}>
           <div className={styles.md}>
             <div
               className={styles['md-close']}
@@ -212,10 +260,21 @@ class Page extends React.Component {
             >
               <img src="/static/img/close.png" alt="" />
             </div>
-            <div className={styles['md-content']}>
+            <div className={styles['md-content']} id="poster">
               <img
+                id="original"
                 src={`/static/img/poster/attr${postId}.jpg`}
                 className={styles.post}
+              />
+              <img
+                id="qr"
+                className={styles['poster-qr']}
+                src={`${host}:8360${getCookie('posterPath')}`}
+              />
+              <img
+                id="newPoster"
+                className={styles.newpost}
+                style={{ display: 'none' }}
               />
             </div>
           </div>
@@ -245,7 +304,8 @@ class Page extends React.Component {
       shareCount,
       shared,
       firstId,
-      host
+      host,
+      loading
     } = this.state;
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
@@ -253,7 +313,7 @@ class Page extends React.Component {
     const lock = !!!report.unlock;
     const lockTopic = lock && !shared;
 
-    const postId = `${firstId}-${getCookie('random')}`
+    const postId = `${firstId}-${getCookie('random')}`;
     // const attrLen = attrList.length;
     // let summary = `宝贝的优势智能是${attrList[0].attrName}，${
     //   attrList[1].attrName
@@ -284,13 +344,11 @@ class Page extends React.Component {
 
     return (
       <>
+        {loading && <ActivityIndicator toast text="正在加载" />}{' '}
         <div className={styles.main}>
           <div className={styles.sectionHead}>
             <div className={styles.avatar}>
-              <img
-                src={`/static/img/avatar/attr${postId}.png`}
-                alt=""
-              />
+              <img src={`/static/img/avatar/attr${postId}.png`} alt="" />
             </div>
             {/* <div className={styles.doughnutWrapper}>
               <div className={styles.percent}>{report.percent || ''}</div>
@@ -309,9 +367,19 @@ class Page extends React.Component {
               )}
             </div> */}
             <div className={styles.sentences}>
-              <div>哇！您的宝贝<span className={styles.highlight}>{report.sentences[0]}</span></div>
-              <div>在<span className={styles.highlight}>{report.sentences[1]}</span>上具有天赋特质</div>
-              <div>有望成为下一个<span className={styles.highlight}>{starMap[postId]}</span>哦</div>
+              <div>
+                哇！您的宝贝
+                <span className={styles.highlight}>{report.sentences[0]}</span>
+              </div>
+              <div>
+                在
+                <span className={styles.highlight}>{report.sentences[1]}</span>
+                上具有天赋特质
+              </div>
+              <div>
+                有望成为下一个
+                <span className={styles.highlight}>{starMap[postId]}</span>哦
+              </div>
             </div>
             <img
               src="/static/img/btn_poster.png"
@@ -710,7 +778,6 @@ class Page extends React.Component {
             src={'/static/img/sharemask.png'}
           />
         </div>
-
         {/* <Modal
           visible={this.state.posterVisible}
           transparent={true}
@@ -737,7 +804,11 @@ class Page extends React.Component {
             <div className={styles['modal-title-wrapper']}>
               <div className={styles['modal-title']}>请输入邀请码解锁报告</div>
               <div className={styles['modal-title']}>
-                或支付<span className={styles.emphasize}>￥{(report.total_fee / 100).toFixed(2)}</span>查看
+                或支付
+                <span className={styles.emphasize}>
+                  ￥{(report.total_fee / 100).toFixed(2)}
+                </span>
+                查看
               </div>
             </div>
             <InputItem

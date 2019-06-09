@@ -54,6 +54,7 @@ class Page extends React.Component {
     // setCookie('cover', data.coverpicPath);
     setCookie('adpath', data.adpicPath);
     setCookie('adurl', data.adurl);
+    setCookie('posterPath', data.posterQcodePath);
   }
 
   handleTest = async () => {
