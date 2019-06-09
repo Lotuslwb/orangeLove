@@ -144,7 +144,7 @@ class Page extends React.Component {
     let opts = {
       scale, // 添加的scale 参数
       canvas, //自定义 canvas
-      logging: true, //日志开关
+      logging: false, //日志开关
       width, //dom 原始宽度
       height, //dom 原始高度
       backgroundColor: 'transparent',
@@ -269,12 +269,13 @@ class Page extends React.Component {
               <img
                 id="qr"
                 className={styles['poster-qr']}
-                src={`${host}:8360${getCookie('posterPath')}`}
+                src={`${getCookie('posterPath')}`}
               />
               <img
                 id="newPoster"
                 className={styles.newpost}
                 style={{ display: 'none' }}
+                crossorigin="anonymous"
               />
             </div>
           </div>
@@ -744,7 +745,7 @@ class Page extends React.Component {
           <div className={styles.sectionBottom}>
             <img
               className={styles['bottom-img']}
-              src={`${host}:8360${getCookie('adpath')}`}
+              src={`${getCookie('adpath')}`}
               onClick={this.handleAd}
             />
             <img

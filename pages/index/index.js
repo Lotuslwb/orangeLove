@@ -84,7 +84,7 @@ class Page extends React.Component {
         <div className={styles.wp} onClick={this.handleTest}>
           <img
             className={styles.page}
-            src={host ? `${host}:8360${cover}` : '/static/img/page/page1.jpg'}
+            src={host ? `${cover}` : '/static/img/page/page1.jpg'}
           />
           <img className={styles.start} src="/static/img/page/btn_start.png" />
         </div>
