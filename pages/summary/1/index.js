@@ -269,7 +269,7 @@ class Page extends React.Component {
               <img
                 id="qr"
                 className={styles['poster-qr']}
-                src={`${getCookie('posterPath')}`}
+                src={`/onlineimgs${getCookie('posterPath')}`}
               />
               <img
                 id="newPoster"
@@ -745,7 +745,7 @@ class Page extends React.Component {
           <div className={styles.sectionBottom}>
             <img
               className={styles['bottom-img']}
-              src={`${getCookie('adpath')}`}
+              src={`/onlineimgs${getCookie('adpath')}`}
               onClick={this.handleAd}
             />
             <img
