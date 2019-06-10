@@ -32,6 +32,9 @@ import $ from 'jquery';
 import { setCookie, getCookie, getRandomInt, payConfig } from '@utils/utils';
 import { starMap } from '@constants/star';
 
+
+
+
 const RadioItem = Radio.RadioItem;
 
 @observer
@@ -43,7 +46,6 @@ class Page extends React.Component {
     if (query.voteId) {
       this.voteId = query.voteId;
     }
-
     this.state = {
       report: {},
       doughnutData: null,
@@ -65,6 +67,9 @@ class Page extends React.Component {
 
   async componentDidMount() {
     try {
+      // let VConsole = require('vconsole/dist/vconsole.min.js') //import vconsole
+      // let vConsole = new VConsole() // 初始化
+
       const report = await agent.Baby.getReport();
       let labels = [];
       const emptyLabels = [];
@@ -125,7 +130,6 @@ class Page extends React.Component {
       });
       this.combineImg();
     } catch (e) {
-    } finally {
     }
   }
 
@@ -134,39 +138,41 @@ class Page extends React.Component {
     this.setState({
       loading: true
     });
-    let shareContent = document.getElementById('poster');
-    let width = 300; //获取dom 宽度
-    let height = 425; //获取dom 高度
-    let canvas = document.createElement('canvas'); //创建一个canvas节点
-    let scale = 1; //定义任意放大倍数 支持小数
-    canvas.width = width * scale; //定义canvas 宽度 * 缩放
-    canvas.height = height * scale; //定义canvas高度 *缩放
-    let opts = {
-      scale, // 添加的scale 参数
-      canvas, //自定义 canvas
-      logging: false, //日志开关
-      width, //dom 原始宽度
-      height, //dom 原始高度
-      backgroundColor: 'transparent',
-      useCORS: true
-    };
-    canvas.getContext('2d').scale(scale, scale); //获取context,设置scale
-    const html2canvas = require('html2canvas');
-    html2canvas(shareContent, opts)
-      .then(canvas => {
-        let IMAGE_URL = canvas.toDataURL('image/png');
-        $('#newPoster')
-          .attr('src', IMAGE_URL)
-          .css('display', 'block');
-        $('#original').css('display', 'none');
-        $('#qr').css('display', 'none');
-        that.setState({
-          loading: false
+    try {
+      let shareContent = document.getElementById('poster');
+      let width = 300; //获取dom 宽度
+      let height = 425; //获取dom 高度
+      let opts = {
+        scale, // 添加的scale 参数
+        logging: false, //日志开关
+        width, //dom 原始宽度
+        height, //dom 原始高度
+        backgroundColor: 'transparent',
+      };
+      canvas.getContext('2d').scale(scale, scale); //获取context,设置scale
+      const html2canvas = require('html2canvas');
+      html2canvas(shareContent, opts)
+        .then(canvas => {
+          let IMAGE_URL = canvas.toDataURL('image/png');
+          $('#newPoster')
+            .attr('src', IMAGE_URL)
+            .css('display', 'block');
+          $('#original').css('display', 'none');
+          $('#qr').css('display', 'none');
+          that.setState({
+            loading: false
+          });
+        })
+        .catch(err => {
+          console.log(err);
         });
-      })
-      .catch(err => {
-        console.log(err);
+    } catch (error) {
+      that.setState({
+        loading: false
       });
+      console.log(error);
+    }
+   
   };
 
   showModal = () => {
@@ -196,7 +202,6 @@ class Page extends React.Component {
     const sucCb = async () => {
       // 根据订单查询是否支付成功，若成功，若成功，则使用成功的回调，否则使用失败的回调
       const test = await agent.Report.queryOrderStatus(out_trade_no);
-      // alert(JSON.stringify(test));
       if (test.trade_state != 'SUCCESS') {
         Toast.info(test.trade_state_desc);
       } else {
