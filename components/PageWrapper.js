@@ -37,16 +37,16 @@ const PageWrapper = ComposedComponent => {
             agent.Wechat.login(query.code, query.fromId).then(data => {
               storage.UserInfo.set(data);
               agent.Wechat.getConfig().then(config => {
-                config.jsApiList = ['onMenuShareAppMessage','chooseWXPay'];
+                config.jsApiList = ['onMenuShareAppMessage', 'chooseWXPay'];
                 // config.debug = true;
                 wx.config(config);
                 wx.ready(function() {
                   //需在用户可能点击分享按钮前就先调用
                   wx.onMenuShareAppMessage({
-                    title: '橙爱天赋测评', // 分享标题
-                    desc: '测测你的孩子有哪些独一无二的天赋', // 分享描述
+                    title: '天赋Discovery测评系统', // 分享标题
+                    desc: '每一个孩子都聪明，只是聪明的方面千差万别', // 分享描述
                     link: 'http://house.t.gegosport.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: '', // 分享图标
+                    imgUrl: '/static/img/share_logo.png', // 分享图标
                     // success: function () {
                     //   console.log('分享成功')
                     //   agent.Baby.unlock({
@@ -74,10 +74,10 @@ const PageWrapper = ComposedComponent => {
           wx.ready(function() {
             //需在用户可能点击分享按钮前就先调用
             wx.onMenuShareAppMessage({
-              title: '橙爱天赋测评', // 分享标题
-              desc: '测测你的孩子有哪些独一无二的天赋', // 分享描述
+              title: '天赋Discovery测评系统', // 分享标题
+              desc: '每一个孩子都聪明，只是聪明的方面千差万别', // 分享描述
               link: 'http://house.t.gegosport.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-              imgUrl: '', // 分享图标
+              imgUrl: '/static/img/share_logo.png', // 分享图标
               // success: function () {
               //   console.log('分享成功')
               //   agent.Baby.unlock({

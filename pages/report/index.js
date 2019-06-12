@@ -107,12 +107,14 @@ class Page extends React.Component {
     chart.axis('score', {
       grid: {
         lineDash: null
-      }
+      },
+      label: null
     });
     chart.axis('attrName', {
       grid: {
         lineDash: null
-      }
+      },
+
     });
     chart.tooltip(false);
     // chart.tooltip({
