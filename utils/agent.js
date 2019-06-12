@@ -105,7 +105,7 @@ const requests = {
 
 const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 
-const host = 'http://house.t.gegosport.com/evaluation/wx';
+const host = 'http://tianfu.cheerbb.com/evaluation/wx';
 // const host = 'http://47.99.64.137:8360/evaluation/wx';
 // const host = 'http://47.99.64.137:8080/evaluation';
 // const host = 'http://localhost:8080/evaluation';

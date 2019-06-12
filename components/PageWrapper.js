@@ -45,7 +45,7 @@ const PageWrapper = ComposedComponent => {
                   wx.onMenuShareAppMessage({
                     title: '天赋Discovery测评系统', // 分享标题
                     desc: '每一个孩子都聪明，只是聪明的方面千差万别', // 分享描述
-                    link: 'http://house.t.gegosport.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    link: 'http://tianfu.cheerbb.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '/static/img/share_logo.png', // 分享图标
                     // success: function () {
                     //   console.log('分享成功')
@@ -76,7 +76,7 @@ const PageWrapper = ComposedComponent => {
             wx.onMenuShareAppMessage({
               title: '天赋Discovery测评系统', // 分享标题
               desc: '每一个孩子都聪明，只是聪明的方面千差万别', // 分享描述
-              link: 'http://house.t.gegosport.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+              link: 'http://tianfu.cheerbb.com?groupid=' + groupid, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
               imgUrl: '/static/img/share_logo.png', // 分享图标
               // success: function () {
               //   console.log('分享成功')
