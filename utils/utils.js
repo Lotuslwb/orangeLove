@@ -134,3 +134,13 @@ export const payConfig = (config, sucCb, errCb) => {
     onBridgeReady();
   }
 };
+
+export const sortByField = (data = [], field) => {
+  const tmp = [...data];
+  const compare = (a, b) => {
+    let value1 = a[field];
+    let value2 = b[field];
+    return value1 - value2;
+  }
+  return tmp.sort(compare)
+}

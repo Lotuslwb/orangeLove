@@ -27,16 +27,12 @@ import styles from './index.less';
 import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
-import { Radar } from 'react-chartjs';
 import $ from 'jquery';
-import { setCookie, getCookie, getRandomInt, payConfig } from '@utils/utils';
+import { setCookie, getCookie, getRandomInt, payConfig, sortByField } from '@utils/utils';
 import { starMap } from '@constants/star';
 
-
-
-
 const RadioItem = Radio.RadioItem;
-
+const F2 = require('@antv/f2');
 @observer
 class Page extends React.Component {
   constructor(props) {
@@ -48,8 +44,6 @@ class Page extends React.Component {
     }
     this.state = {
       report: {},
-      doughnutData: null,
-      radarData: null,
       posterVisible: false,
       shareVisible: false,
       testVisiable: false,
@@ -71,18 +65,6 @@ class Page extends React.Component {
       // let vConsole = new VConsole() // 初始化
 
       const report = await agent.Baby.getReport();
-      let labels = [];
-      const emptyLabels = [];
-      const attrData = [];
-      (report.attrList || []).forEach(attr => {
-        labels.push(attr.attrName);
-        attrData.push(attr.score);
-        emptyLabels.push('');
-      });
-      // 新改动，无需隐藏雷达图标签
-      // if (report.shareCount < 1) {
-      //   labels = emptyLabels;
-      // }
       if (!getCookie('random')) {
         setCookie('random', getRandomInt(3));
       }
@@ -91,46 +73,15 @@ class Page extends React.Component {
           firstId: report.attrList[0].attrId
         });
       }
-      const radarData = {
-        labels,
-        datasets: [
-          {
-            label: 'My Second dataset',
-            fillColor: 'rgba(234,135,68,0.2)',
-            strokeColor: 'rgba(234,135,68,.8)',
-            pointColor: 'rgba(234,135,68,1)',
-            pointStrokeColor: '#fff',
-            pointHighlightFill: '#fff',
-            pointHighlightStroke: 'rgba(151,187,205,1)',
-            data: attrData
-          }
-        ]
-      };
-      const doughnutData = [
-        {
-          value: 90,
-          color: '#57ddb1',
-          highlight: '#57ddb1',
-          label: '90'
-        },
-        {
-          value: 10,
-          color: 'rgba(255, 255, 255, 0)',
-          highlight: '#5AD3D1',
-          label: 'Green'
-        }
-      ];
       this.setState({
         report,
-        radarData,
-        doughnutData,
         shareCount: report.shareCount,
         shared: report.shareCount > 0,
         host: window.location.protocol + '//' + window.location.host
       });
+      this.renderRadar({ data: sortByField(report.attrList, 'attrId'), id: 'myChart' });
       this.combineImg();
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   combineImg = () => {
@@ -143,11 +94,11 @@ class Page extends React.Component {
       let width = 300; //获取dom 宽度
       let height = 425; //获取dom 高度
       let opts = {
-        scale, // 添加的scale 参数
+        scale: 2, // 添加的scale 参数
         logging: false, //日志开关
         width, //dom 原始宽度
         height, //dom 原始高度
-        backgroundColor: 'transparent',
+        backgroundColor: 'transparent'
       };
       canvas.getContext('2d').scale(scale, scale); //获取context,设置scale
       const html2canvas = require('html2canvas');
@@ -172,7 +123,62 @@ class Page extends React.Component {
       });
       console.log(error);
     }
-   
+  };
+
+  renderRadar = ({ data, id }) => {
+    const chart = new F2.Chart({
+      id,
+      pixelRatio: window.devicePixelRatio, // 指定分辨率
+      padding: [20, 60, 20, 85]
+    });
+    chart.coord('polar', {
+      startAngle: -3 * Math.PI / 4,
+      endAngle: 5 * Math.PI / 4,
+    });
+    chart.source(data, {
+      score: {
+        min: 0,
+        max: 100
+        //   nice: false,
+        //   tickCount: 2
+      }
+    });
+    chart.axis('score', {
+      grid: {
+        lineDash: null
+      },
+      label: null
+    });
+    chart.axis('attrName', {
+      grid: {
+        lineDash: null
+      },
+      label: {
+        fontSize: 13,
+        fontWeight: 'bold'
+      }
+    });
+    chart.tooltip(false);
+    // chart.tooltip({
+    //     showTitle: true,
+    //     showItemMarker: false,
+    // });
+    chart
+      .line()
+      .position('attrName*score')
+      .color('rgba(234,135,68,0.2)')
+      .style({
+        fill: 'rgba(234,135,68,0.2)'
+      });
+    chart
+      .point()
+      .position('attrName*score')
+      .color('rgba(234,135,68,1)')
+      .style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    chart.render();
   };
 
   showModal = () => {
@@ -238,7 +244,8 @@ class Page extends React.Component {
     if (!lockTopic) {
       Router.push(`/report?attrId=${attr.attrId}`);
     } else {
-      Toast.info('分享给好友解锁优化建议');
+      this.setState({ shareVisible: true });
+      // Toast.info('分享给好友解锁优化建议');
     }
   };
 
@@ -255,7 +262,10 @@ class Page extends React.Component {
           className={styles.mask}
           style={posterVisible ? { right: 0 } : { right: 9999 }}
         />
-        <div className={styles['md-wrapper']} style={posterVisible ? { left: '50%' } : { left: -9999 }}>
+        <div
+          className={styles['md-wrapper']}
+          style={posterVisible ? { left: '50%' } : { left: -9999 }}
+        >
           <div className={styles.md}>
             <div
               className={styles['md-close']}
@@ -305,8 +315,6 @@ class Page extends React.Component {
   render() {
     const {
       report = {},
-      doughnutData,
-      radarData,
       shareCount,
       shared,
       firstId,
@@ -356,22 +364,6 @@ class Page extends React.Component {
             <div className={styles.avatar}>
               <img src={`/static/img/avatar/attr${postId}.png`} alt="" />
             </div>
-            {/* <div className={styles.doughnutWrapper}>
-              <div className={styles.percent}>{report.percent || ''}</div>
-              {doughnutData && (
-                <Doughnut
-                  data={doughnutData}
-                  width={100}
-                  height={100}
-                  options={{
-                    segmentShowStroke: false,
-                    percentageInnerCutout: 90,
-                    animateRotate: false,
-                    legendTemplate: 'test'
-                  }}
-                />
-              )}
-            </div> */}
             <div className={styles.sentences}>
               <div>
                 哇！您的宝贝
@@ -396,18 +388,7 @@ class Page extends React.Component {
           </div>
           <div className={styles.sectionBody}>
             <div className={styles.radarWrapper}>
-              {radarData && (
-                <Radar
-                  data={radarData}
-                  width={250}
-                  height={250}
-                  options={{
-                    legend: {
-                      display: false
-                    }
-                  }}
-                />
-              )}
+              <canvas id="myChart" width="320" height="320" />
             </div>
             <div className={styles.summary}>
               <div className={styles.summaryLabel}>八大智能雷达图</div>
@@ -417,7 +398,7 @@ class Page extends React.Component {
                 onClick={() => {
                   this.setState({ shareVisible: true });
                 }}
-                style={{ marginTop: '20px', width: '165px', height: '24px' }}
+                style={{ marginTop: '20px', width: '246px', height: '36px' }}
               />
             </div>
           </div>
@@ -425,9 +406,9 @@ class Page extends React.Component {
             <div style={{ fontSize: '20px', textAlign: 'center' }}>
               八大智能
             </div>
-            {/* <div className={styles.tips}>
-              * 劣势智能如何增强请查看专业版报告
-            </div> */}
+            <div className={styles.tips}>
+              各项智能的养育建议和努力方向，请查看专业版报告
+            </div>
             <div className={styles.row}>
               {attrList[0] && (
                 <div

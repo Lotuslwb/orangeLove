@@ -27,7 +27,7 @@ import styles from './index.less';
 import pageStore from './store';
 import storage from '@utils/storage';
 import Router from 'next/router';
-import { Radar } from 'react-chartjs';
+import { sortByField } from '@utils/utils';
 
 const RadioItem = Radio.RadioItem;
 const F2 = require('@antv/f2');
@@ -56,33 +56,15 @@ class Page extends React.Component {
       const user = data[0];
       const report = data[1];
       const attrs = data.slice(2);
-      let labels = [];
-      const attrData = [];
-      (report.attrList || []).forEach(attr => {
-        labels.push(attr.attrName);
-        attrData.push(attr.score);
-      });
-      const radarData = {
-        labels,
-        datasets: [
-          {
-            label: 'My Second dataset',
-            fillColor: 'rgba(234,135,68,0.2)',
-            strokeColor: 'rgba(234,135,68,.8)',
-            pointColor: 'rgba(234,135,68,1)',
-            pointStrokeColor: '#fff',
-            pointHighlightFill: '#fff',
-            pointHighlightStroke: 'rgba(151,187,205,1)',
-            data: attrData
-          }
-        ]
-      };
 
       this.setState({
         name: user.name,
         report,
-        radarData,
         reports: attrs
+      });
+      this.renderEightRadar({
+        data: sortByField(report.attrList, 'attrId'),
+        id: 'myChart'
       });
       attrs.map((attr, index) => {
         this.renderRadar({ data: attr.radarData, id: `myChart-${index + 1}` });
@@ -91,6 +73,62 @@ class Page extends React.Component {
     } finally {
     }
   }
+
+  renderEightRadar = ({ data, id }) => {
+    const chart = new F2.Chart({
+      id,
+      pixelRatio: window.devicePixelRatio, // 指定分辨率
+      padding: [20, 60, 20, 85]
+    });
+    chart.coord('polar', {
+      startAngle: (-3 * Math.PI) / 4,
+      endAngle: (5 * Math.PI) / 4
+    });
+    chart.source(data, {
+      score: {
+        min: 0,
+        max: 100
+        //   nice: false,
+        //   tickCount: 2
+      }
+    });
+    chart.axis('score', {
+      grid: {
+        lineDash: null
+      },
+      label: null
+    });
+    chart.axis('attrName', {
+      grid: {
+        lineDash: null
+      },
+      label: {
+        fontSize: 13,
+        fontWeight: 'bold'
+      }
+    });
+    chart.tooltip(false);
+    // chart.tooltip({
+    //     showTitle: true,
+    //     showItemMarker: false,
+    // });
+    chart
+      .line()
+      .position('attrName*score')
+      .color('rgba(234,135,68,0.2)')
+      .style({
+        fill: 'rgba(234,135,68,0.2)'
+      });
+    chart
+      .point()
+      .position('attrName*score')
+      .color('rgba(234,135,68,1)')
+      .style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    chart.render();
+  };
 
   renderRadar = ({ data, id }) => {
     const chart = new F2.Chart({
@@ -116,7 +154,7 @@ class Page extends React.Component {
     chart.axis('attrName', {
       grid: {
         lineDash: null
-      },
+      }
     });
     chart.tooltip(false);
     chart
@@ -183,7 +221,7 @@ class Page extends React.Component {
   };
 
   renderTotalRadar = () => {
-    const { name, report = {}, radarData } = this.state;
+    const { name, report = {} } = this.state;
     const attrList = report.attrList || [];
     if (!attrList.length) return null;
     const attr = attrList[0].attrId;
@@ -198,22 +236,9 @@ class Page extends React.Component {
     // }的发展上略显不足，需要进一步加强。`;
     return (
       <>
-        <div className={styles['pre-title']}>
-          第一部分&nbsp;&nbsp;天赋测评总报告
-        </div>
+        <div className={styles['pre-title']}>天赋测评总报告</div>
         <div className={styles.radarWrapper} style={{ marginTop: -30 }}>
-          {radarData && (
-            <Radar
-              data={radarData}
-              width={250}
-              height={250}
-              options={{
-                legend: {
-                  display: false
-                }
-              }}
-            />
-          )}
+          <canvas id="myChart" width="320" height="320" />
         </div>
         <div className={styles.para}>
           [解读] <span className={styles.highlight}>{name}</span>宝贝，在
@@ -566,7 +591,7 @@ class Page extends React.Component {
         </p>
         <h3 className={styles['p-title']}>如何解读测评结果</h3>
         <p className={styles.para}>
-          我们建议父母在阅读本报告后，是致力于思考如何有针对性地培养孩子，而不是给孩子贴标签，例如“这个骇子很聪明”、“那个孩子不聪明”。
+          我们建议父母在阅读本报告后，是致力于思考如何有针对性地培养孩子，而不是给孩子贴标签，例如“这个孩子很聪明”、“那个孩子不聪明”。
         </p>
         <p className={styles.para}>
           美国哈佛大学著名教育心理学家霍华德·加德纳数授（H.Gardner）有一句名言：“任何孩子都有其优势智能领域”。所以，我们并不想给任何一个孩子贴上“天才”或“笨蛋”的标签，我们只希望通过专业的生物信息学分析和评估，能够在一定程度上呈现孩子的一些基本的生物学属性发现孩子的潜能，并建议教育工作者因材施教。在这种思想下，每个孩子都可以成才，在各自的优势领域里成为有用之才。
@@ -748,7 +773,7 @@ class Page extends React.Component {
   renderSuffix = () => {
     return (
       <>
-        <div className={styles['pre-title']}>顺强补弱”，成就天赋宝贝</div>
+        <div className={styles['pre-title']}>“顺强补弱”，成就天赋宝贝</div>
         <p className={styles.para}>
           天赋是大自然赋予儿童最宝贵的礼物。它独树一帜，特殊而又有个性。每个儿童都具有属于自己独特的天赋，这份天赋让TA与众不同、独具一格，是TA成功道路上的助推力和指向标。天赋与宝贝的智能发展、教育环境、幸福能力都息息相关。
         </p>
