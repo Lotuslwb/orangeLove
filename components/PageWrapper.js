@@ -129,7 +129,7 @@ const PageWrapper = ComposedComponent => {
               type="text/css"
               href="//unpkg.com/antd-mobile/dist/antd-mobile.min.css"
             />
-            <script src="http://res.wx.qq.com/open/js/jweixin-1.3.2.js" />
+            <script src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js" />
           </Head>{' '}
           <ComposedComponent {...this.props} />{' '}
         </div>
